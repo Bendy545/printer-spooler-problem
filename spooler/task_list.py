@@ -7,12 +7,22 @@ class TaskListException(Exception):
 
 class Node:
     def __init__(self, task):
+        """
+        Defines the single task in the TaskList
+
+        :param task: Task instance stored in this node
+        """
         self.task = task
         self.prev = None
         self.next = None
 
 class TaskList:
     def __init__(self, max_size=10):
+        """
+        Defines LinkedList queue of tasks ordered by priority.
+
+        :param max_size: maximum number of tasks to print
+        """
         self.tail = None
         self.head = None
         self.size = 0
@@ -23,15 +33,34 @@ class TaskList:
 
     @property
     def max_size(self):
+        """
+        Get the maximum size of the TaskList
+
+        :return: maximum size of the TaskList
+        """
         return self._max_size
 
     @max_size.setter
     def max_size(self, value):
+        """
+        Set the maximum size of the TaskList
+
+        :param value: The maximum size of the TaskList
+        :raises TaskListException: If value is not a positive integer
+        """
         if not isinstance(value, int):
             raise TaskListException('max_size must be an integer')
+        if value < 1:
+            raise TaskListException('max_size must be positive')
         self._max_size = value
 
     def append(self, task):
+        """
+        Add a new task to the queue based on its priority
+
+        :param task: Task instance to add to the queue
+        :raises TaskListException: If task is not a Task instance
+        """
 
         if not isinstance(task, Task):
             raise TaskListException("task must be a Task")
@@ -69,6 +98,12 @@ class TaskList:
             self.not_empty.notify()
 
     def pop(self):
+        """
+        Removes the first task in the queue
+        Blocks if the queue is empty until a task is available
+
+        :return: the first task in the queue
+        """
 
         with self.not_empty:
             while self.size == 0:
@@ -87,6 +122,11 @@ class TaskList:
             return node.task
 
     def __str__(self):
+        """
+        Return a string representation of the current tasks in the TaskList
+
+        :return: String with all tasks in the queue
+        """
         current = self.head
         result = "Current Tasks: \n"
         while current is not None:
@@ -95,4 +135,9 @@ class TaskList:
         return result
 
     def __len__(self):
+        """
+        Return the number of tasks in the TaskList
+
+        :return: Number of tasks in the TaskList
+        """
         return self.size

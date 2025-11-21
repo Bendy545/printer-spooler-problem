@@ -5,6 +5,9 @@ from models.task import Task, TaskException
 
 class TaskTests(unittest.TestCase):
     def test_init(self):
+        """
+        Test that Task initializes correctly
+        """
         task_list = TaskList()
         user1 = User("User1", task_list, 2)
         task = Task("Doc", 12, 2, user1)
@@ -14,6 +17,9 @@ class TaskTests(unittest.TestCase):
         self.assertEqual(task.user, user1)
 
     def test_setters(self):
+        """
+        Test that all setters work as expected
+        """
         task_list = TaskList()
         user1 = User("User1", task_list, 2)
         user2 = User("User2", task_list, 2)
@@ -28,6 +34,9 @@ class TaskTests(unittest.TestCase):
         self.assertEqual(task.user, user2)
 
     def test_setters_error(self):
+        """
+        Test that setting an invalid value raises TaskException
+        """
         task_list = TaskList()
         user1 = User("User1", task_list, 2)
         task = Task("Doc", 12, 2, user1)
@@ -41,6 +50,9 @@ class TaskTests(unittest.TestCase):
             task.user = "user"
 
     def test_str(self):
+        """
+        Test that string representation is correct
+        """
         task_list = TaskList()
         user1 = User("User1", task_list, 2)
         task = Task("Doc", 12, 2, user1)

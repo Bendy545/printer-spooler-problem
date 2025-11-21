@@ -4,16 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Did reamining classes and changed a liitle about the logic">
-      <change afterPath="$PROJECT_DIR$/tests/printer_tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/task_list_tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/task_tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/user_tests.py" afterDir="false" />
+    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Added unit tests and getters and setters into every class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/devices/printer.py" beforeDir="false" afterPath="$PROJECT_DIR$/devices/printer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/task.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spooler/task_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/spooler/task_list.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/printer_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/printer_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/task_list_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/task_list_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/task_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/task_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/user_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/user_tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/users/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/user.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -206,7 +205,7 @@
       <workItem from="1763673149013" duration="32000" />
       <workItem from="1763673493621" duration="339000" />
       <workItem from="1763726283728" duration="2198000" />
-      <workItem from="1763737320471" duration="13812000" />
+      <workItem from="1763737320471" duration="17627000" />
     </task>
     <task id="LOCAL-00001" summary="Project creation">
       <option name="closed" value="true" />
@@ -240,7 +239,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763743993910</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added unit tests and getters and setters into every class">
+      <option name="closed" value="true" />
+      <created>1763753311245</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1763753311245</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -261,7 +268,8 @@
     <MESSAGE value="Project creation" />
     <MESSAGE value="changed the structure of the project and added a whole task list based on a doubly LinkedList with a priority queue" />
     <MESSAGE value="Did reamining classes and changed a liitle about the logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="Did reamining classes and changed a liitle about the logic" />
+    <MESSAGE value="Added unit tests and getters and setters into every class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added unit tests and getters and setters into every class" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763751800896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
