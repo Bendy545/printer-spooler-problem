@@ -1,35 +1,40 @@
+import threading
+import time
+
 from spooler.task_list import TaskList
 
 class PrinterException(Exception):
     pass
 
-class Printer:
-    def __init__(self, size,name="printer"):
-        self.size = size
-        self.name = name
-        self.tasks = TaskList(size)
+class Printer(threading.Thread):
+    def __init__(self, task_list, name="printer"):
+        threading.Thread.__init__(self)
 
-    @property
-    def name(self):
-        return self.name
+        self._name = None
+        self.tasks = None
+        self.running = True
+        self.set_tasks(task_list)
+        self.set_name(name)
 
-    @property
-    def size(self):
-        return self.size
+    def set_name(self, name):
+        if not isinstance(name, str):
+            raise PrinterException("Printer name must be a string")
+        self._name = name
 
-    @size.setter
-    def size(self, value):
-        if not isinstance(value, int):
-            raise PrinterException("size must be an integer")
-        if value < 1:
-            raise PrinterException("size must be positive")
-        self.size = value
+    def set_tasks(self, tasks):
+        if not isinstance(tasks, TaskList):
+            raise PrinterException("Printer tasks must be a type of a TaskList")
+        self.tasks = tasks
 
-    @name.setter
-    def name(self, value):
-        if not isinstance(value, str):
-            raise PrinterException("name must be a string")
-        self.name = value
+    def stop(self):
+        self.running = False
+        print("Finished printing")
+
+    def run(self):
+        while self.running:
+            task = self.tasks.pop()
+            print(f"PRINTING: {task.name}, pages={task.pages}, priority={task.priority} for user={task.user.username}")
+            time.sleep(task.pages * 1)
 
 
 
