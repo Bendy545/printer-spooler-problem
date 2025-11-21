@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="">
+    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Did reamining classes and changed a liitle about the logic">
+      <change afterPath="$PROJECT_DIR$/tests/printer_tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/task_list_tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/task_tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/user_tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/devices/printer.py" beforeDir="false" afterPath="$PROJECT_DIR$/devices/printer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -20,6 +24,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Python Unit Test" />
         <option value="Python Script" />
       </list>
     </option>
@@ -50,6 +55,22 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_name_error.executor": "Run",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_name_setter.executor": "Run",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_stop.executor": "Run",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_tasks.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_append.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_pop.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_settery.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_settery_error.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_str.executor": "Run",
+    "Python tests.Python tests for tests.task_tests.TaskTests.test_init.executor": "Run",
+    "Python tests.Python tests for tests.task_tests.TaskTests.test_str.executor": "Run",
+    "Python tests.Python tests for tests.user_tests.UserTest.test_setters_error.executor": "Run",
+    "Python tests.Python tests in printer_tests.py.executor": "Run",
+    "Python tests.Python tests in task_list_tests.py.executor": "Run",
+    "Python tests.Python tests in task_tests.py.executor": "Run",
+    "Python tests.Python tests in user_tests.py.executor": "Run",
     "Python.main.executor": "Run",
     "Python.printer.executor": "Run",
     "Python.task_list.executor": "Run",
@@ -73,81 +94,94 @@
       <recent name="$PROJECT_DIR$/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Python tests in user_tests.py">
+    <configuration name="Python tests for tests.task_tests.TaskTests.test_str" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="printer-producent-consumer" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.task_tests.TaskTests.test_str&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="printer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests in printer_tests.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="printer-producent-consumer" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/devices" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/devices/printer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/printer_tests.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="task_list" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests in task_list_tests.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="printer-producent-consumer" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tasks" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spooler/task_list.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/task_list_tests.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in task_tests.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="printer-producent-consumer" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/task_tests.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in user_tests.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="printer-producent-consumer" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/user_tests.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
-        <item itemvalue="Python.task_list" />
-        <item itemvalue="Python.printer" />
+        <item itemvalue="Python tests.Python tests in user_tests.py" />
+        <item itemvalue="Python tests.Python tests in task_tests.py" />
+        <item itemvalue="Python tests.Python tests in task_list_tests.py" />
+        <item itemvalue="Python tests.Python tests in printer_tests.py" />
+        <item itemvalue="Python tests.Python tests for tests.task_tests.TaskTests.test_str" />
       </list>
     </recent_temporary>
   </component>
@@ -172,7 +206,7 @@
       <workItem from="1763673149013" duration="32000" />
       <workItem from="1763673493621" duration="339000" />
       <workItem from="1763726283728" duration="2198000" />
-      <workItem from="1763737320471" duration="5698000" />
+      <workItem from="1763737320471" duration="13812000" />
     </task>
     <task id="LOCAL-00001" summary="Project creation">
       <option name="closed" value="true" />
@@ -198,7 +232,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763670424332</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Did reamining classes and changed a liitle about the logic">
+      <option name="closed" value="true" />
+      <created>1763743993910</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763743993910</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -218,11 +260,13 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Project creation" />
     <MESSAGE value="changed the structure of the project and added a whole task list based on a doubly LinkedList with a priority queue" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed the structure of the project and added a whole task list based on a doubly LinkedList with a priority queue" />
+    <MESSAGE value="Did reamining classes and changed a liitle about the logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Did reamining classes and changed a liitle about the logic" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763743852037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763751800896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/printer_producent_consumer$printer.coverage" NAME="printer Coverage Results" MODIFIED="1763739216504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/devices" />
     <SUITE FILE_PATH="coverage/printer_producent_consumer$task_list.coverage" NAME="task_list Coverage Results" MODIFIED="1763739892037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/spooler" />
+    <SUITE FILE_PATH="coverage/printer_producent_consumer$.coverage" NAME=" Coverage Results" MODIFIED="1763753226674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

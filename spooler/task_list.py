@@ -21,6 +21,16 @@ class TaskList:
         self.not_empty = threading.Condition(self.lock)
         self.not_full = threading.Condition(self.lock)
 
+    @property
+    def max_size(self):
+        return self._max_size
+
+    @max_size.setter
+    def max_size(self, value):
+        if not isinstance(value, int):
+            raise TaskListException('max_size must be an integer')
+        self._max_size = value
+
     def append(self, task):
 
         if not isinstance(task, Task):
@@ -78,8 +88,11 @@ class TaskList:
 
     def __str__(self):
         current = self.head
-        result = ""
+        result = "Current Tasks: \n"
         while current is not None:
             result += str(current.task) + "\n"
             current = current.next
         return result
+
+    def __len__(self):
+        return self.size

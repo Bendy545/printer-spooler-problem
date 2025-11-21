@@ -3,27 +3,48 @@ from models.task import Task
 import random
 import time
 
+from spooler.task_list import TaskList
+
+
 class UserException(Exception):
     pass
 
 class User(threading.Thread):
     def __init__(self, username, task_list, number_of_tasks):
         threading.Thread.__init__(self)
-        self.username = None
-        self.number_of_tasks = None
-        self.task_list = task_list
-        self.set_username(username)
-        self.set_number_of_tasks(number_of_tasks)
-
-    def set_number_of_tasks(self, number_of_tasks):
-        if not isinstance(number_of_tasks, int):
-            raise UserException("number_of_tasks must be an integer")
-        self.number_of_tasks = number_of_tasks
-
-    def set_username(self, username):
-        if not isinstance(username, str):
-            raise UserException("username must be a string")
         self.username = username
+        self.number_of_tasks = number_of_tasks
+        self.task_list = task_list
+
+    @property
+    def username(self):
+        return self._username
+
+    @username.setter
+    def username(self, value):
+        if not isinstance(value, str):
+            raise UserException("username must be a string")
+        self._username = value
+
+    @property
+    def task_list(self):
+        return self._task_list
+
+    @task_list.setter
+    def task_list(self, value):
+        if not isinstance(value, TaskList):
+            raise UserException('task_list must be an instance of TaskList')
+        self._task_list = value
+
+    @property
+    def number_of_tasks(self):
+        return self._number_of_tasks
+
+    @number_of_tasks.setter
+    def number_of_tasks(self, value):
+        if not isinstance(value, int):
+            raise UserException('number_of_tasks must be an integer')
+        self._number_of_tasks = value
 
     def run(self):
         for i in range(self.number_of_tasks):

@@ -10,21 +10,29 @@ class Printer(threading.Thread):
     def __init__(self, task_list, name="printer"):
         threading.Thread.__init__(self)
 
-        self._name = None
-        self.tasks = None
+        self.name = name
+        self.tasks = task_list
         self.running = True
-        self.set_tasks(task_list)
-        self.set_name(name)
 
-    def set_name(self, name):
-        if not isinstance(name, str):
-            raise PrinterException("Printer name must be a string")
-        self._name = name
+    @property
+    def name(self):
+        return self._name
 
-    def set_tasks(self, tasks):
-        if not isinstance(tasks, TaskList):
-            raise PrinterException("Printer tasks must be a type of a TaskList")
-        self.tasks = tasks
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str):
+            raise PrinterException("Printer Name must be a string")
+        self._name = value
+
+    @property
+    def tasks(self):
+        return self._tasks
+
+    @tasks.setter
+    def tasks(self, value):
+        if not isinstance(value, TaskList):
+            raise PrinterException("Printer tasks must be a TaskList class")
+        self._tasks = value
 
     def stop(self):
         self.running = False

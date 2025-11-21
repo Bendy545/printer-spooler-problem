@@ -10,13 +10,16 @@ def main():
 
     users = [User(f"user{i}", spooler_1, i) for i in range(1,6)]
 
+
     for user in users:
         user.start()
 
     for user in users:
         user.join()
-    printer.join()
+
     printer.stop()
+    printer.join()
+
 
 if __name__ == '__main__':
     main()
