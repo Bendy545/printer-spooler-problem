@@ -1,7 +1,7 @@
 import unittest
 
-from devices.printer import Printer, PrinterException
-from spooler.task_list import TaskList
+from src.devices.printer import Printer, PrinterException
+from src.spooler.task_list import TaskList
 
 
 class PrinterTest(unittest.TestCase):

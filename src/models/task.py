@@ -96,7 +96,7 @@ class Task:
         :param value: the user who submitted the task
         :raises TaskException: If value is not a User instance
         """
-        from users.user import User
+        from src.users.user import User
         if not isinstance(value, User):
             raise TaskException('user must be a User')
         self._user = value

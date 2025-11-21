@@ -1,9 +1,9 @@
 import threading
-from models.task import Task
+from src.models.task import Task
 import random
 import time
 
-from spooler.task_list import TaskList
+from src.spooler.task_list import TaskList
 
 
 class UserException(Exception):

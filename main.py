@@ -1,6 +1,6 @@
-from devices.printer import Printer
-from spooler.task_list import TaskList
-from users.user import User
+from src.devices.printer import Printer
+from src.spooler.task_list import TaskList
+from src.users.user import User
 
 def main():
     spooler_1 = TaskList()

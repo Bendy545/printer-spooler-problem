@@ -1,7 +1,7 @@
 import threading
 import time
 
-from spooler.task_list import TaskList
+from src.spooler.task_list import TaskList
 
 class PrinterException(Exception):
     pass

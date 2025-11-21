@@ -1,5 +1,5 @@
 import threading
-from models.task import Task
+from src.models.task import Task
 
 
 class TaskListException(Exception):

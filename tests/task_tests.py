@@ -1,7 +1,7 @@
 import unittest
-from users.user import User
-from spooler.task_list import TaskList
-from models.task import Task, TaskException
+from src.users.user import User
+from src.spooler.task_list import TaskList
+from src.models.task import Task, TaskException
 
 class TaskTests(unittest.TestCase):
     def test_init(self):
