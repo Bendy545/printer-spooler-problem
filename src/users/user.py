@@ -9,8 +9,8 @@ from src.spooler.task_list import TaskList
 class UserException(Exception):
     pass
 
-class User(threading.Thread):
-    def __init__(self, username, task_list, number_of_tasks):
+class User():
+    def __init__(self, username, task_list=None, number_of_tasks=0):
         """
         Represents a user submitting print tasks to a TaskList
 
@@ -19,7 +19,6 @@ class User(threading.Thread):
         :param number_of_tasks: Number of the tasks the user will submit
         :raises UserException: If any parameter is not of the expected type
         """
-        threading.Thread.__init__(self)
         self.username = username
         self.number_of_tasks = number_of_tasks
         self.task_list = task_list

@@ -1,0 +1,59 @@
+ <!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Tiskový Server</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Printer Server</h1>
+
+        <!-- Printer Status -->
+        <div class="status-card">
+            <h2>Printer state</h2>
+            <div class="printer-status">
+                <div class="status-indicator" id="status-indicator"></div>
+                <span id="status-text">Connecting...</span>
+            </div>
+            <div class="current-job" id="current-job">
+                <strong>Currently printing:</strong> <span id="current-task">Nothing</span>
+            </div>
+        </div>
+
+        <div class="queue-card">
+            <h2>Queue (<span id="queue-count">0</span>)</h2>
+            <div id="queue-list" class="queue-list">
+                <p class="empty">Queue is empty</p>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h2>Add task</h2>
+            <form id="task-form" class="simple-form">
+                <input type="text" id="username" placeholder="User"  required>
+                <input type="text" id="name" placeholder="Document" required>
+                <div class="form-row">
+                    <input type="number" id="pages" placeholder="Number of pages" value="3" min="1" required>
+                    <select id="priority">
+                        <option value="1">High</option>
+                        <option value="5" selected>Normal</option>
+                        <option value="10">Low</option>
+                    </select>
+                </div>
+                <button type="submit">Send to print</button>
+            </form>
+            <p id="form-response"></p>
+        </div>
+
+        <div class="log-card">
+            <h2>Activity</h2>
+            <ul id="log" class="log">
+                <li class="info">Connecting to server...</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
