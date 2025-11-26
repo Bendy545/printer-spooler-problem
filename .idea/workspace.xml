@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Made a websocket server and website for sending tasks into the server with FastAPI. Also changed some classes based for the needs of the server">
+    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Instead of making you own file like just writing name of the file into the form now you can upload fole into the form and then it will etract the name of the file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,7 +208,7 @@
       <workItem from="1764053088851" duration="11200000" />
       <workItem from="1764084781835" duration="37000" />
       <workItem from="1764146515239" duration="765000" />
-      <workItem from="1764184218464" duration="1771000" />
+      <workItem from="1764184218464" duration="3200000" />
     </task>
     <task id="LOCAL-00001" summary="Project creation">
       <option name="closed" value="true" />
@@ -274,7 +274,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764084038634</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Instead of making you own file like just writing name of the file into the form now you can upload fole into the form and then it will etract the name of the file">
+      <option name="closed" value="true" />
+      <created>1764186494360</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1764186494360</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -299,13 +307,14 @@
     <MESSAGE value="Added a documentation to all methods and tests" />
     <MESSAGE value="changed the structure of the project" />
     <MESSAGE value="Made a websocket server and website for sending tasks into the server with FastAPI. Also changed some classes based for the needs of the server" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made a websocket server and website for sending tasks into the server with FastAPI. Also changed some classes based for the needs of the server" />
+    <MESSAGE value="Instead of making you own file like just writing name of the file into the form now you can upload fole into the form and then it will etract the name of the file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Instead of making you own file like just writing name of the file into the form now you can upload fole into the form and then it will etract the name of the file" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763758559953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/printer_producent_consumer$printer.coverage" NAME="printer Coverage Results" MODIFIED="1763739216504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/devices" />
     <SUITE FILE_PATH="coverage/printer_spooler_problem$.coverage" NAME=" Coverage Results" MODIFIED="1764053123308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/printer_spooler_problem$main.coverage" NAME="main Coverage Results" MODIFIED="1764185968900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/printer_spooler_problem$main.coverage" NAME="main Coverage Results" MODIFIED="1764187595007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/printer_producent_consumer$task_list.coverage" NAME="task_list Coverage Results" MODIFIED="1763739892037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/spooler" />
     <SUITE FILE_PATH="coverage/printer_producent_consumer$.coverage" NAME=" Coverage Results" MODIFIED="1763757818106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

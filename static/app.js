@@ -10,7 +10,6 @@ const formResponse = document.getElementById('form-response');
 
 ws.onopen = () => {
     updateStatus('online', 'Disconnected');
-    addLogMessage("INFO: Connected to server", 'info');
     fetchSystemState();
 };
 
@@ -21,18 +20,15 @@ ws.onmessage = (event) => {
             updateSystemState(data.data);
         }
     } catch (e) {
-        addLogMessage(event.data, getMessageClass(event.data));
 
     }
 };
 
 ws.onclose = () => {
     updateStatus('offline', 'Disconnected');
-    addLogMessage("INFO: Disconnected from server", 'info');
 };
 
 ws.onerror = (error) => {
-    addLogMessage("CHYBA: Error connecting", 'stop');
 };
 
 taskForm.addEventListener('submit', async (event) => {
@@ -100,7 +96,7 @@ function updatePrinterStatus(state) {
         currentTask.textContent = `${state.current_task.name} (${state.current_task.pages} pages)`;
     } else {
         updateStatus('online', 'Ready');
-        currentTask.textContent = 'Nic';
+        currentTask.textContent = 'Nothing';
     }
 }
 
@@ -128,23 +124,6 @@ function updateStatus(status, text) {
     statusIndicator.className = 'status-indicator';
     statusIndicator.classList.add(`status-${status}`);
     statusText.textContent = text;
-}
-
-function addLogMessage(message, className) {
-    const li = document.createElement('li');
-    li.textContent = message;
-    li.className = className;
-    log.appendChild(li);
-    log.scrollTop = log.scrollHeight;
-}
-
-function getMessageClass(message) {
-    if (message.startsWith('INFO:')) return 'info';
-    if (message.startsWith('NEW:')) return 'new';
-    if (message.startsWith('START:')) return 'start';
-    if (message.startsWith('END:')) return 'end';
-    if (message.startsWith('STOP:')) return 'stop';
-    return 'info';
 }
 
 function showFormResponse(message, className) {
