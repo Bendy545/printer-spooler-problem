@@ -1,7 +1,4 @@
-// WebSocket connection for real-time updates
 const ws = new WebSocket("ws://" + window.location.host + "/ws/status");
-
-// DOM elements
 const statusIndicator = document.getElementById('status-indicator');
 const statusText = document.getElementById('status-text');
 const currentTask = document.getElementById('current-task');
@@ -11,29 +8,21 @@ const log = document.getElementById('log');
 const taskForm = document.getElementById('task-form');
 const formResponse = document.getElementById('form-response');
 
-// WebSocket events
 ws.onopen = () => {
     updateStatus('online', 'Disconnected');
     addLogMessage("INFO: Connected to server", 'info');
-    fetchSystemState(); // Load initial state
+    fetchSystemState();
 };
 
 ws.onmessage = (event) => {
     try {
-        // Try to parse as JSON first (for system state)
         const data = JSON.parse(event.data);
         if (data.type === 'system_state') {
             updateSystemState(data.data);
         }
     } catch (e) {
-        // If not JSON, treat as plain text message
         addLogMessage(event.data, getMessageClass(event.data));
 
-        // Refresh system state when important events happen
-        if (event.data.startsWith('NEW:') || event.data.startsWith('START:') ||
-            event.data.startsWith('END:') || event.data.startsWith('STOP:')) {
-            fetchSystemState();
-        }
     }
 };
 
@@ -46,36 +35,40 @@ ws.onerror = (error) => {
     addLogMessage("CHYBA: Error connecting", 'stop');
 };
 
-// Form submission
 taskForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const taskData = {
-        username: document.getElementById('username').value,
-        name: document.getElementById('name').value,
-        pages: parseInt(document.getElementById('pages').value),
-        priority: parseInt(document.getElementById('priority').value)
-    };
+    const formData = new FormData();
+    formData.append("username", document.getElementById('username').value);
+    formData.append("priority", parseInt(document.getElementById('priority').value));
+    formData.append("pages", parseInt(document.getElementById('pages').value));
+
+    const fileInput = document.getElementById('file');
+    if (fileInput.files.length > 0) {
+        formData.append("file", fileInput.files[0]);
+    } else {
+        showFormResponse('Error: You have not selected a file', 'error');
+        return;
+    }
 
     showFormResponse('Sending...', '');
 
     try {
         const response = await fetch('/tasks/', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(taskData)
+            body: formData
         });
 
         const result = await response.json();
+
         if (response.ok) {
             showFormResponse('Task added!', 'success');
             taskForm.reset();
-            fetchSystemState(); // Refresh the display
         } else {
-            showFormResponse('Error: ' + (result.error || 'Neznámá chyba'), 'error');
+            showFormResponse('Error: ' + (result.error || 'Unknown error'), 'error');
         }
     } catch (error) {
-        showFormResponse('Error connecting', 'error');
+        showFormResponse('Error connecting', 'l', 'error');
     }
 
     setTimeout(() => {
@@ -95,12 +88,9 @@ async function fetchSystemState() {
 }
 
 function updateSystemState(state) {
-    console.log('Updating system state:', state); // Debug log
-
+    console.log('Updating system state:', state);
     queueCount.textContent = state.queue_length;
-
     updatePrinterStatus(state);
-
     updateQueueList(state.queue_tasks);
 }
 
@@ -115,15 +105,14 @@ function updatePrinterStatus(state) {
 }
 
 function updateQueueList(tasks) {
-    console.log('Updating queue with tasks:', tasks); // Debug log
-
+    console.log('Updating queue with tasks:', tasks);
     if (tasks.length === 0) {
-        queueList.innerHTML = '<p class="empty">Queue is empty/p>';
+        queueList.innerHTML = '<p class="empty">Queue is empty</p>';
         return;
     }
 
-    queueList.innerHTML = tasks.map(task => `
-        <div class="queue-item">
+    queueList.innerHTML = tasks.map(task =>
+        `<div class="queue-item">
             <div class="queue-item-header">
                 <span class="queue-item-name">${task.name}</span>
                 <span class="queue-item-priority">Priorita: ${task.priority}</span>
@@ -131,8 +120,8 @@ function updateQueueList(tasks) {
             <div class="queue-item-details">
                 Uživatel: ${task.user} | Stran: ${task.pages}
             </div>
-        </div>
-    `).join('');
+        </div>`
+    ).join('');
 }
 
 function updateStatus(status, text) {
@@ -162,5 +151,3 @@ function showFormResponse(message, className) {
     formResponse.textContent = message;
     formResponse.className = className;
 }
-
-setInterval(fetchSystemState, 3000);

@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,6 @@
     <div class="container">
         <h1>Printer Server</h1>
 
-        <!-- Printer Status -->
         <div class="status-card">
             <h2>Printer state</h2>
             <div class="printer-status">
@@ -30,9 +29,12 @@
 
         <div class="form-card">
             <h2>Add task</h2>
-            <form id="task-form" class="simple-form">
-                <input type="text" id="username" placeholder="User"  required>
-                <input type="text" id="name" placeholder="Document" required>
+            <form id="task-form" class="simple-form" enctype="multipart/form-data">
+                <input type="text" id="username" placeholder="User" required>
+
+                <label for="file" style="font-size: 0.9em; color: #555;">Vyberte soubor k tisku:</label>
+                <input type="file" id="file" required>
+
                 <div class="form-row">
                     <input type="number" id="pages" placeholder="Number of pages" value="3" min="1" required>
                     <select id="priority">
@@ -53,7 +55,6 @@
             </ul>
         </div>
     </div>
-
     <script src="/static/app.js"></script>
 </body>
 </html>
