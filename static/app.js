@@ -31,6 +31,9 @@ ws.onclose = () => {
 ws.onerror = (error) => {
 };
 
+/**
+ * Form submission handler for adding a new task.
+ */
 taskForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -82,10 +85,18 @@ taskForm.addEventListener('submit', async (event) => {
     }, 3000);
 });
 
+/**
+ * Checks if a filename has an allowed extension.
+ * @param {string} filename
+ * @returns {boolean} True if allowed, false otherwise
+ */
 function isAllowed(filename) {
     return allowedExtensions.some(ext => filename.toLowerCase().endsWith(ext));
 }
 
+/**
+ * Fetches the current system state from the server and updates the UI.
+ */
 async function fetchSystemState() {
     try {
         const response = await fetch('/system-state/');
@@ -96,6 +107,10 @@ async function fetchSystemState() {
     }
 }
 
+/**
+ * Updates the queue and printer status UI based on server state.
+ * @param {Object} state
+ */
 function updateSystemState(state) {
     console.log('Updating system state:', state);
     queueCount.textContent = state.queue_length;
@@ -103,6 +118,10 @@ function updateSystemState(state) {
     updateQueueList(state.queue_tasks);
 }
 
+/**
+ * Updates the printer status display
+ * @param {Object} state
+ */
 function updatePrinterStatus(state) {
     if (state.printer_status === 'printing' && state.current_task) {
         updateStatus('printing', 'printing');
@@ -113,6 +132,10 @@ function updatePrinterStatus(state) {
     }
 }
 
+/**
+ * Updates the queue list display
+ * @param {Array} tasks
+ */
 function updateQueueList(tasks) {
     console.log('Updating queue with tasks:', tasks);
     if (tasks.length === 0) {
@@ -124,21 +147,31 @@ function updateQueueList(tasks) {
         `<div class="queue-item">
             <div class="queue-item-header">
                 <span class="queue-item-name">${task.name}</span>
-                <span class="queue-item-priority">Priorita: ${task.priority}</span>
+                <span class="queue-item-priority">Priority: ${task.priority}</span>
             </div>
             <div class="queue-item-details">
-                Uživatel: ${task.user} | Stran: ${task.pages}
+                User: ${task.user} | pages: ${task.pages}
             </div>
         </div>`
     ).join('');
 }
 
+/**
+ * Updates the connection status indicator.
+ * @param {string} status - e.g., 'online', 'offline', 'printing'
+ * @param {string} text - Text to display
+ */
 function updateStatus(status, text) {
     statusIndicator.className = 'status-indicator';
     statusIndicator.classList.add(`status-${status}`);
     statusText.textContent = text;
 }
 
+/**
+ * Displays a message in the form response area.
+ * @param {string} message - Message text
+ * @param {string} className - CSS class to apply (e.g., 'error', 'success')
+ */
 function showFormResponse(message, className) {
     formResponse.textContent = message;
     formResponse.className = className;

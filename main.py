@@ -12,39 +12,71 @@ from typing import List, Dict, Any
 import threading
 import uvicorn
 
-
 from src.spooler.task_list import TaskList
 from src.devices.printer import Printer
 from src.models.task import Task
 from src.users.user import User
 
+import sys
+import os
+
 
 class ConnectionManager:
     def __init__(self):
+        """
+        This class manages active WebSocket connections to facilitate real-time broadcasting.
+
+        active_connections: list of currently open connections.
+        lock: ensures thread-safe access to the active_connections list.
+        """
         self.active_connections: List[WebSocket] = []
         self.lock = threading.Lock()
 
     async def connect(self, websocket: WebSocket):
+        """
+        Accepts a new WebSocket connection and adds it to the active_connections list.
+
+        :param websocket: WebSocket object representing the client connection.
+        """
         await websocket.accept()
         with self.lock:
             self.active_connections.append(websocket)
         await websocket.send_text("INFO: Successfully connected to server")
 
     def disconnect(self, websocket: WebSocket):
+        """
+        Removes a WebSocket connection from the active_connections list.
+
+        :param websocket: WebSocket object representing the client connection.
+        """
         with self.lock:
             self.active_connections.remove(websocket)
 
     async def broadcast_json(self, data: Dict[str, Any]):
+        """
+        Broadcasts a JSON message to all active websocket connections.
+
+        :param data: Dictionary to be sent as JSON
+        """
         for connection in self.active_connections:
             await connection.send_json(data)
 
     async def broadcast(self, message: str):
+        """
+        Broadcasts a plain text message to all active WebSocket connections.
+
+        :param message: The message string to broadcast
+        """
         print("Broadcast: " + message)
         for connection in self.active_connections:
             await connection.send_text(message)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    Lifespan handler for FastAPI.
+    Starts priter on server startup and stops it on shutdown.
+    """
     print("Server starting...")
 
     loop = asyncio.get_event_loop()
@@ -64,14 +96,32 @@ async def lifespan(app: FastAPI):
     print("Server stopping...")
     app.state.printer.stop()
 
+def resource_path(relative_path):
+    """
+    Resolves file path for runtime and PyInstaller app.
+
+    :param relative_path: Relative path to file
+    :return: Absolute path to file
+    """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
+
 manager = ConnectionManager()
 task_list = TaskList()
 app = FastAPI(title="Print Spooler API", lifespan=lifespan)
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
+STATIC_DIR = resource_path("static")
+INDEX_FILE = os.path.join(STATIC_DIR, "index.html")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 async def get_system_state():
+    """
+    Returns current system state including printer status and task queue.
+
+    :return: Dictionary containing printer status, current task, queue length, and task list
+    """
     queue_tasks = task_list.get_all_tasks()
     queue_length = len(task_list)
     printer_status = app.state.printer.get_status()
@@ -98,8 +148,17 @@ async def get_system_state():
         ]
     }
 
-
 def get_page_count(file_stream, filename: str) -> int:
+    """
+    Returns the number of pages in a file based on its type.
+
+    Supports PDF, DOCX and common image formats (JPG, PNG).
+    Defaults to 1 if page count cannot be determined.
+
+    :param file_stream: file-like object
+    :param filename: Name of the file
+    :return: Number of pages in the file
+    """
     filename = filename.lower()
 
     try:
@@ -127,12 +186,15 @@ def get_page_count(file_stream, filename: str) -> int:
         return 1
 
 @app.post("/tasks/")
-async def create_task(
-        username: str = Form(...),
-        priority: int = Form(...),
-        file: UploadFile = File(...)
-):
+async def create_task(username: str = Form(...),priority: int = Form(...),file: UploadFile = File(...)):
+    """
+    Creates a new print task and adds it to the queue.
 
+    :param username: Name of the user submitting the task
+    :param priority: Task priority
+    :param file: Uploaded file
+    :return: JSON message with task status
+    """
     try:
         pages = get_page_count(file.file, file.filename)
         user_obj = User(username=username, task_list=task_list, number_of_tasks=0)
@@ -157,16 +219,31 @@ async def create_task(
 
 @app.get("/system-state/")
 async def system_state_endpoint():
+    """
+    Returns the current system state as JSON.
 
+    :return: Dictionary with printer status and task queue
+    """
     return await get_system_state()
 
 @app.get("/")
 async def get_root():
-    return FileResponse("static/index.html")
+    """
+    Serves the main frontend HTML page.
+
+    :return: FileResponse with index.html
+    """
+    return FileResponse(INDEX_FILE)
 
 
 @app.websocket("/ws/status")
 async def websocket_endpoint(websocket: WebSocket):
+    """
+    WebSocket endpoint for real-time system updates.
+
+    :param websocket: WebSocket connection to client
+    :return:
+    """
     await manager.connect(websocket)
     try:
         while True:
@@ -176,5 +253,5 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"Client {websocket.client} disconnected.")
 
 if __name__ == "__main__":
-    print("Spouštím server na adrese http://127.0.0.1:8000")
+    print("Server enabled on http://127.0.0.1:8000")
     uvicorn.run(app, host="127.0.0.1", port=8000)
