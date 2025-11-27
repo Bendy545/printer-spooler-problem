@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="deleted the log from webpage">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Added a file type detection and number of pages detection in teh file" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -209,7 +204,7 @@
       <workItem from="1764084781835" duration="37000" />
       <workItem from="1764146515239" duration="765000" />
       <workItem from="1764184218464" duration="3283000" />
-      <workItem from="1764256734116" duration="2735000" />
+      <workItem from="1764256734116" duration="3239000" />
     </task>
     <task id="LOCAL-00001" summary="Project creation">
       <option name="closed" value="true" />
@@ -291,7 +286,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764187945255</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Added a file type detection and number of pages detection in teh file">
+      <option name="closed" value="true" />
+      <created>1764260398072</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1764260398072</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -318,7 +321,8 @@
     <MESSAGE value="Made a websocket server and website for sending tasks into the server with FastAPI. Also changed some classes based for the needs of the server" />
     <MESSAGE value="Instead of making you own file like just writing name of the file into the form now you can upload fole into the form and then it will etract the name of the file" />
     <MESSAGE value="deleted the log from webpage" />
-    <option name="LAST_COMMIT_MESSAGE" value="deleted the log from webpage" />
+    <MESSAGE value="Added a file type detection and number of pages detection in teh file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a file type detection and number of pages detection in teh file" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763758559953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
