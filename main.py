@@ -1,7 +1,13 @@
 import asyncio
+
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Form
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
+
+from pypdf import PdfReader
+import docx
+
 from typing import List, Dict, Any
 import threading
 import uvicorn
@@ -37,9 +43,33 @@ class ConnectionManager:
         for connection in self.active_connections:
             await connection.send_text(message)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Server starting...")
+
+    loop = asyncio.get_event_loop()
+
+    printer = Printer(
+        task_list=task_list,
+        manager=manager,
+        loop=loop,
+        name="MainPrinter",
+        get_system_state_func=get_system_state
+    )
+    printer.start()
+    app.state.printer = printer
+
+    yield  # server běží
+
+    print("Server stopping...")
+    app.state.printer.stop()
+
 manager = ConnectionManager()
 task_list = TaskList()
-app = FastAPI(title="Print Spooler API")
+app = FastAPI(title="Print Spooler API", lifespan=lifespan)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 async def get_system_state():
     queue_tasks = task_list.get_all_tasks()
@@ -68,35 +98,43 @@ async def get_system_state():
         ]
     }
 
-@app.on_event("startup")
-async def startup_event():
-    loop = asyncio.get_event_loop()
-    printer = Printer(
-        task_list=task_list,
-        manager=manager,
-        loop=loop,
-        name="MainPrinter",
-        get_system_state_func=get_system_state
-    )
-    printer.start()
-    app.state.printer = printer
-    print("Server started, printer runs")
 
+def get_page_count(file_stream, filename: str) -> int:
+    filename = filename.lower()
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    print("Server is stopping")
-    app.state.printer.stop()
+    try:
+        if filename.endswith('.pdf'):
+            reader = PdfReader(file_stream)
+            return len(reader.pages)
+
+        elif filename.endswith('.docx'):
+            document = docx.Document(file_stream)
+            props = document.core_properties
+            if props.pages and props.pages > 0:
+                return props.pages
+            else:
+                print("Warning: DOCX page count metadata missing, defaulting to 1.")
+                return 1
+
+        elif filename.endswith(('.jpg', '.jpeg', '.png')):
+            return 1
+
+        else:
+            return 1
+
+    except Exception as e:
+        print(f"Error reading file {filename}: {e}. Defaulting to 1 page.")
+        return 1
 
 @app.post("/tasks/")
 async def create_task(
         username: str = Form(...),
         priority: int = Form(...),
-        pages: int = Form(...),
         file: UploadFile = File(...)
 ):
 
     try:
+        pages = get_page_count(file.file, file.filename)
         user_obj = User(username=username, task_list=task_list, number_of_tasks=0)
 
         new_task = Task(
@@ -116,10 +154,6 @@ async def create_task(
 
     except Exception as e:
         return {"error": f"Error adding task: {e}"}
-
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 
 @app.get("/system-state/")
 async def system_state_endpoint():

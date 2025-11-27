@@ -4,9 +4,9 @@ const statusText = document.getElementById('status-text');
 const currentTask = document.getElementById('current-task');
 const queueCount = document.getElementById('queue-count');
 const queueList = document.getElementById('queue-list');
-const log = document.getElementById('log');
 const taskForm = document.getElementById('task-form');
 const formResponse = document.getElementById('form-response');
+const allowedExtensions = [".pdf", ".docx", ".jpg", ".jpeg", ".png"];
 
 ws.onopen = () => {
     updateStatus('online', 'Disconnected');
@@ -37,15 +37,24 @@ taskForm.addEventListener('submit', async (event) => {
     const formData = new FormData();
     formData.append("username", document.getElementById('username').value);
     formData.append("priority", parseInt(document.getElementById('priority').value));
-    formData.append("pages", parseInt(document.getElementById('pages').value));
 
     const fileInput = document.getElementById('file');
-    if (fileInput.files.length > 0) {
-        formData.append("file", fileInput.files[0]);
-    } else {
-        showFormResponse('Error: You have not selected a file', 'error');
-        return;
+    if (fileInput.files.length === 0) {
+    showFormResponse('Error: You have not selected a file', 'error');
+    return;
     }
+
+    const file = fileInput.files[0];
+
+    if (!isAllowed(file.name)) {
+    showFormResponse(
+        'Invalid file type! Allowed types: ' + allowedExtensions.join(', '),
+        'error'
+    );
+    return;
+    }
+
+    formData.append("file", file);
 
     showFormResponse('Sending...', '');
 
@@ -72,6 +81,10 @@ taskForm.addEventListener('submit', async (event) => {
         formResponse.className = '';
     }, 3000);
 });
+
+function isAllowed(filename) {
+    return allowedExtensions.some(ext => filename.toLowerCase().endsWith(ext));
+}
 
 async function fetchSystemState() {
     try {
