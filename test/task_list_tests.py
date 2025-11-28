@@ -64,5 +64,33 @@ class TestTaskList(unittest.TestCase):
         task_list = TaskList()
         self.assertEqual(len(task_list), 0)
 
+    def test_append_priority_insertion(self):
+        """
+        Test that tasks are added in correct order based on priority (lower number = higher priority).
+        """
+        task_list = TaskList()
+        user = User("test_user", task_list, 1)
+
+        task_low = Task("low_doc", 1, 10, user)
+        task_high = Task("high_doc", 10, 2, user)
+        task_mid = Task("mid_doc", 5, 3, user)
+
+        task_list.append(task_low)
+        task_list.append(task_high)
+        task_list.append(task_mid)
+
+        ordered_tasks = task_list.get_all_tasks()
+
+        self.assertEqual(ordered_tasks[0].name, "high_doc")
+        self.assertEqual(ordered_tasks[1].name, "mid_doc")
+        self.assertEqual(ordered_tasks[2].name, "low_doc")
+        self.assertEqual(task_list.size, 3)
+
+        task_high_2 = Task("high_doc_2", 10, 1, user)
+        task_list.append(task_high_2)
+
+        ordered_tasks = task_list.get_all_tasks()
+        self.assertEqual(ordered_tasks[0].name, "high_doc_2")
+
 if __name__ == '__main__':
     unittest.main()

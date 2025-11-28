@@ -146,10 +146,9 @@ class TaskList:
         Clear all tasks from the queue
         """
         with self.not_empty:
-            with self.lock:
-                self.head = None
-                self.tail = None
-                self.size = 0
+            self.head = None
+            self.tail = None
+            self.size = 0
             self.not_empty.notify_all()
             self.not_full.notify_all()
 

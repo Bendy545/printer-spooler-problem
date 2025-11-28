@@ -58,7 +58,5 @@ class TaskTests(unittest.TestCase):
         task = Task("Doc", 12, 2, user1)
         self.assertEqual(str(task), "Task Doc, pages=12, priority=2 by user=User1")
 
-
-
 if __name__ == "__main__":
     unittest.main()

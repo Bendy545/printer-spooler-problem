@@ -18,7 +18,7 @@ class Printer(threading.Thread):
         self.current_task = None
         self.is_printing = False
         self.lock = threading.Lock()
-        self.get_system_state_func = get_system_state_func  # Store the function reference
+        self.get_system_state_func = get_system_state_func
 
     @property
     def name(self):

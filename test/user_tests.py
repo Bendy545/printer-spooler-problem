@@ -41,7 +41,5 @@ class UserTest(unittest.TestCase):
         with self.assertRaises(UserException):
             user1.task_list = "tasklist"
 
-
-
 if __name__ == '__main__':
     unittest.main()
