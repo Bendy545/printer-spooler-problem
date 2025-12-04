@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Added a documentation in the code">
-      <change afterPath="$PROJECT_DIR$/test_print2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/devices/printer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/devices/printer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/spooler/task_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/spooler/task_list.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/app.js" afterDir="false" />
-    </list>
+    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Refactored the whole printer system and added a real printer" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -352,7 +344,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764266138959</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Refactored the whole printer system and added a real printer">
+      <option name="closed" value="true" />
+      <created>1764869084042</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1764869084042</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -382,7 +382,8 @@
     <MESSAGE value="Added a file type detection and number of pages detection in teh file" />
     <MESSAGE value="added a requirements.txt file" />
     <MESSAGE value="Added a documentation in the code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added a documentation in the code" />
+    <MESSAGE value="Refactored the whole printer system and added a real printer" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored the whole printer system and added a real printer" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763758559953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
