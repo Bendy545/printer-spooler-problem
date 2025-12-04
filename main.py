@@ -112,7 +112,8 @@ def resource_path(relative_path):
 
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
 
-
+UPLOAD_DIR = "uploaded_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 manager = ConnectionManager()
 task_list = TaskList()
 app = FastAPI(title="Print Spooler API", lifespan=lifespan)
