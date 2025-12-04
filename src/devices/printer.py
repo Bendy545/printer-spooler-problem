@@ -104,7 +104,7 @@ class Printer(threading.Thread):
         if isinstance(image_or_path, str):
             img = Image.open(image_or_path)
         else:
-            img = image_or_path  # already PIL.Image
+            img = image_or_path
 
         thermal_width = 384
         aspect_ratio = img.height / img.width
@@ -124,7 +124,7 @@ class Printer(threading.Thread):
                 for bit in range(8):
                     if x + bit < thermal_width:
                         pixel = img.getpixel((x + bit, y))
-                        if pixel == 0:  # Black
+                        if pixel == 0:
                             byte |= (1 << (7 - bit))
                 line_bytes.append(byte)
             nL = width_bytes % 256
@@ -178,11 +178,11 @@ class Printer(threading.Thread):
                 raise PrinterException(f"Printer '{self.printer_name}' is not available")
 
             file_ext = os.path.splitext(file_path)[1].lower()
-            commands = b'\x1B\x40'  # Initialize printer
+            commands = b'\x1B\x40'
 
             if file_ext == '.pdf':
                 print(f"Processing PDF: {file_path}")
-                # Try to extract text
+                
                 try:
                     text = self._extract_text_from_pdf(file_path)
                 except Exception as e:
@@ -190,10 +190,10 @@ class Printer(threading.Thread):
                     text = ""
 
                 if text.strip():
-                    # Normal text printing
+                    
                     formatted_text = self._format_text_for_thermal(text)
 
-                    commands += b'\x1B\x61\x01'  # Center align
+                    commands += b'\x1B\x61\x01'
                     commands += b'\x1D\x21\x11'
                     commands += f"{task_name}\n".encode('cp852', errors='replace')
                     commands += b'\x1D\x21\x00'
@@ -202,7 +202,7 @@ class Printer(threading.Thread):
                     commands += formatted_text.encode('cp852', errors='replace')
                     commands += b'\n' + b'-' * self.char_per_line + b'\n'
                 else:
-                    # PDF has no text → convert pages to images
+                    
                     print("PDF contains no text, converting pages to images...")
                     images = convert_from_path(file_path)
                     for img in images:
@@ -220,11 +220,9 @@ class Printer(threading.Thread):
             else:
                 raise PrinterException(f"Unsupported file type: {file_ext}")
 
-            # Feed & cut
             commands += b'\n\n\n'
             commands += b'\x1D\x56\x00'
 
-            # Send to printer
             self._print_raw(commands, task_name)
             print(f"Document printed: {file_path}")
 
