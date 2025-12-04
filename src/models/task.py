@@ -2,7 +2,7 @@ class TaskException(Exception):
     pass
 
 class Task:
-    def __init__(self, name, pages, priority, user):
+    def __init__(self, name, pages, priority, user, file_path=None):
         """
         Represents a print job submitted by the user
 
@@ -16,6 +16,7 @@ class Task:
         self.pages = pages
         self.priority = priority
         self.user = user
+        self.file_path = file_path
 
     @property
     def name(self):

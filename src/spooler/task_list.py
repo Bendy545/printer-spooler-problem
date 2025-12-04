@@ -62,6 +62,8 @@ class TaskList:
         :raises TaskListException: If task is not a Task instance
         """
 
+        print(f"APPEND called: {task.name}, queue_size={self.size}")
+
         if not isinstance(task, Task):
             raise TaskListException("task must be a Task")
         new_node = Node(task)
@@ -105,6 +107,8 @@ class TaskList:
 
         :return: the first task in the queue
         """
+
+        print(f"POP called, queue_size={self.size}")
 
         with self.not_empty:
             while self.size == 0:

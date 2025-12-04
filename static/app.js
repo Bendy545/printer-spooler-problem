@@ -9,7 +9,7 @@ const formResponse = document.getElementById('form-response');
 const allowedExtensions = [".pdf", ".docx", ".jpg", ".jpeg", ".png"];
 
 ws.onopen = () => {
-    updateStatus('online', 'Disconnected');
+    updateStatus('online', 'Connected');
     fetchSystemState();
 };
 
@@ -20,15 +20,16 @@ ws.onmessage = (event) => {
             updateSystemState(data.data);
         }
     } catch (e) {
-
+        console.log('Server message:', event.data);
     }
 };
 
 ws.onclose = () => {
-    updateStatus('offline', 'Disconnected');
+    updateStatus('offline', 'Disconnected from server');
 };
 
 ws.onerror = (error) => {
+    console.error('WebSocket error:', error);
 };
 
 /**
@@ -43,18 +44,18 @@ taskForm.addEventListener('submit', async (event) => {
 
     const fileInput = document.getElementById('file');
     if (fileInput.files.length === 0) {
-    showFormResponse('Error: You have not selected a file', 'error');
-    return;
+        showFormResponse('Error: You have not selected a file', 'error');
+        return;
     }
 
     const file = fileInput.files[0];
 
     if (!isAllowed(file.name)) {
-    showFormResponse(
-        'Invalid file type! Allowed types: ' + allowedExtensions.join(', '),
-        'error'
-    );
-    return;
+        showFormResponse(
+            'Invalid file type! Allowed types: ' + allowedExtensions.join(', '),
+            'error'
+        );
+        return;
     }
 
     formData.append("file", file);
@@ -70,13 +71,13 @@ taskForm.addEventListener('submit', async (event) => {
         const result = await response.json();
 
         if (response.ok) {
-            showFormResponse('Task added!', 'success');
+            showFormResponse('Task added to queue!', 'success');
             taskForm.reset();
         } else {
             showFormResponse('Error: ' + (result.error || 'Unknown error'), 'error');
         }
     } catch (error) {
-        showFormResponse('Error connecting', 'l', 'error');
+        showFormResponse('Error connecting to server', 'error');
     }
 
     setTimeout(() => {
@@ -123,9 +124,15 @@ function updateSystemState(state) {
  * @param {Object} state
  */
 function updatePrinterStatus(state) {
+    if (!state.printer_available) {
+        updateStatus('offline', 'Printer disconnected');
+        currentTask.textContent = 'Waiting for printer...';
+        return;
+    }
+
     if (state.printer_status === 'printing' && state.current_task) {
-        updateStatus('printing', 'printing');
-        currentTask.textContent = `${state.current_task.name} (${state.current_task.pages} pages)`;
+        updateStatus('printing', 'Printing');
+        currentTask.textContent = `${state.current_task.name} (${state.current_task.pages} pages) - ${state.current_task.user}`;
     } else {
         updateStatus('online', 'Ready');
         currentTask.textContent = 'Nothing';

@@ -1,24 +1,25 @@
 import asyncio
+import os
+import sys
+import threading
+from contextlib import asynccontextmanager
+from typing import List, Dict, Any
 
+import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Form
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from contextlib import asynccontextmanager
-
 from pypdf import PdfReader
 import docx
-
-from typing import List, Dict, Any
-import threading
-import uvicorn
 
 from src.spooler.task_list import TaskList
 from src.devices.printer import Printer
 from src.models.task import Task
 from src.users.user import User
 
-import sys
-import os
+# Directory to store uploaded files
+UPLOAD_DIR = "uploaded_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 class ConnectionManager:
@@ -71,11 +72,12 @@ class ConnectionManager:
         for connection in self.active_connections:
             await connection.send_text(message)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
     Lifespan handler for FastAPI.
-    Starts priter on server startup and stops it on shutdown.
+    Starts printer on server startup and stops it on shutdown.
     """
     print("Server starting...")
 
@@ -86,7 +88,8 @@ async def lifespan(app: FastAPI):
         manager=manager,
         loop=loop,
         name="MainPrinter",
-        get_system_state_func=get_system_state
+        get_system_state_func=get_system_state,
+        printer_name="Xprinter"
     )
     printer.start()
     app.state.printer = printer
@@ -95,6 +98,7 @@ async def lifespan(app: FastAPI):
 
     print("Server stopping...")
     app.state.printer.stop()
+
 
 def resource_path(relative_path):
     """
@@ -107,6 +111,7 @@ def resource_path(relative_path):
         return os.path.join(sys._MEIPASS, relative_path)
 
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
+
 
 manager = ConnectionManager()
 task_list = TaskList()
@@ -136,6 +141,7 @@ async def get_system_state():
         }
     return {
         "printer_status": "printing" if printer_status['is_printing'] else "idle",
+        "printer_available": printer_status.get('printer_available', False),
         "current_task": current_task_dict,
         "queue_length": queue_length,
         "queue_tasks": [
@@ -147,6 +153,7 @@ async def get_system_state():
             } for task in queue_tasks
         ]
     }
+
 
 def get_page_count(file_stream, filename: str) -> int:
     """
@@ -185,8 +192,9 @@ def get_page_count(file_stream, filename: str) -> int:
         print(f"Error reading file {filename}: {e}. Defaulting to 1 page.")
         return 1
 
+
 @app.post("/tasks/")
-async def create_task(username: str = Form(...),priority: int = Form(...),file: UploadFile = File(...)):
+async def create_task(username: str = Form(...), priority: int = Form(...), file: UploadFile = File(...)):
     """
     Creates a new print task and adds it to the queue.
 
@@ -195,15 +203,36 @@ async def create_task(username: str = Form(...),priority: int = Form(...),file: 
     :param file: Uploaded file
     :return: JSON message with task status
     """
+
     try:
+        # Save the uploaded file
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
+
+        # Handle duplicate filenames
+        base_name, extension = os.path.splitext(file.filename)
+        counter = 1
+        while os.path.exists(file_path):
+            file_path = os.path.join(UPLOAD_DIR, f"{base_name}_{counter}{extension}")
+            counter += 1
+
+        # Write file to disk
+        with open(file_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+
+        # Reset file pointer for page counting
+        file.file.seek(0)
         pages = get_page_count(file.file, file.filename)
+        print(f"Pages counted: {pages}")
+
         user_obj = User(username=username, task_list=task_list, number_of_tasks=0)
 
         new_task = Task(
             name=file.filename,
             pages=pages,
             priority=priority,
-            user=user_obj
+            user=user_obj,
+            file_path=file_path  # Add file path to task
         )
 
         task_list.append(new_task)
@@ -217,6 +246,7 @@ async def create_task(username: str = Form(...),priority: int = Form(...),file: 
     except Exception as e:
         return {"error": f"Error adding task: {e}"}
 
+
 @app.get("/system-state/")
 async def system_state_endpoint():
     """
@@ -225,6 +255,7 @@ async def system_state_endpoint():
     :return: Dictionary with printer status and task queue
     """
     return await get_system_state()
+
 
 @app.get("/")
 async def get_root():
@@ -252,6 +283,16 @@ async def websocket_endpoint(websocket: WebSocket):
         manager.disconnect(websocket)
         print(f"Client {websocket.client} disconnected.")
 
+
 if __name__ == "__main__":
-    print("Server enabled on http://127.0.0.1:8000")
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    import socket
+
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+
+    print(f"Server starting on:")
+    print(f"  - Local: http://127.0.0.1:8000")
+    print(f"  - Network: http://{local_ip}:8000")
+    print(f"\nOther devices on your network can access it at: http://{local_ip}:8000")
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
