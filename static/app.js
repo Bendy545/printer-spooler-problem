@@ -6,7 +6,7 @@ const queueCount = document.getElementById('queue-count');
 const queueList = document.getElementById('queue-list');
 const taskForm = document.getElementById('task-form');
 const formResponse = document.getElementById('form-response');
-const allowedExtensions = [".pdf", ".docx", ".jpg", ".jpeg", ".png"];
+const allowedExtensions = [".pdf"];
 
 ws.onopen = () => {
     updateStatus('online', 'Connected');

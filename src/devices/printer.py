@@ -8,6 +8,8 @@ from pypdf import PdfReader
 from pdf2image import convert_from_path
 import io
 
+import re
+
 from src.spooler.task_list import TaskList
 
 
@@ -76,66 +78,298 @@ class Printer(threading.Thread):
             print(f"Error extracting text from PDF: {e}")
             raise PrinterException(f"Failed to extract PDF text: {e}")
 
-    def _format_text_for_thermal(self, text):
-        """
-        Format text for thermal printer (word wrap, etc.)
+    import re
 
-        :param text: Text to format
-        :return: Formatted text
-        """
-        lines = []
-        for line in text.split('\n'):
-            if len(line) <= self.char_per_line:
-                lines.append(line)
-            else:
-                words = line.split(' ')
-                current_line = ""
-                for word in words:
-                    if len(current_line) + len(word) + 1 <= self.char_per_line:
-                        current_line += word + " "
-                    else:
-                        lines.append(current_line.strip())
-                        current_line = word + " "
-                if current_line:
-                    lines.append(current_line.strip())
-
-        return '\n'.join(lines)
-
-    def _convert_image_to_thermal(self, image_or_path):
-        """
-        Convert a PIL.Image object or image path to ESC/POS bytes.
-        """
-        if isinstance(image_or_path, str):
-            img = Image.open(image_or_path)
+    def _detect_invoice_language(self, text):
+        """Detect invoice language"""
+        text_lower = text.lower()
+        if any(word in text_lower for word in ['faktura', 'dodavatel', 'odběratel', 'celkem', 'částka']):
+            return 'cs'
+        elif any(
+                word in text_lower for word in ['invoice', 'bill', 'receipt', 'total', 'amount', 'customer', 'vendor']):
+            return 'en'
         else:
-            img = image_or_path
+            return 'unknown'
 
-        thermal_width = 384
-        aspect_ratio = img.height / img.width
-        new_height = int(thermal_width * aspect_ratio)
+    def _smart_format_invoice(self, text):
+        """
+        Universal invoice formatter - works with any layout/language
+        Intelligently extracts key information without hardcoded patterns
 
-        img = img.resize((thermal_width, new_height), Image.Resampling.LANCZOS)
-        img = img.convert('1')
+        :param text: Extracted text from PDF
+        :return: Formatted text for thermal printer
+        """
+        lines = [line.strip() for line in text.split('\n') if line.strip()]
+        formatted = []
+        width = self.char_per_line
 
-        width_bytes = (thermal_width + 7) // 8
-        height = img.height
-        commands = b''
+        header_keywords = ['invoice', 'faktura', 'bill', 'receipt', 'daňový doklad', 'dañový doklad']
+        vendor_keywords = ['from:', 'vendor:', 'seller:', 'dodavatel:', 'supplier:', 'issued by:']
+        customer_keywords = ['to:', 'customer:', 'buyer:', 'odběratel:', 'odberatel:', 'bill to:', 'billed to:']
+        date_keywords = ['date:', 'datum:', 'issued:', 'vystavení:', 'vystaveni:']
+        due_keywords = ['due:', 'splatnost:', 'payment due:', 'due date:']
+        payment_keywords = ['payment:', 'forma:', 'method:', 'úhrady:', 'uhrady:']
+        items_keywords = ['item', 'description', 'product', 'položk', 'polozk', 'označení', 'oznaceni', 'qty',
+                          'množství', 'mnozstvi']
+        total_keywords = ['total', 'celkem', 'amount due', 'balance', 'součet', 'soucet', 'subtotal']
+        tax_keywords = ['tax', 'vat', 'dph', 'gst']
 
-        for y in range(height):
-            line_bytes = []
-            for x in range(0, thermal_width, 8):
-                byte = 0
-                for bit in range(8):
-                    if x + bit < thermal_width:
-                        pixel = img.getpixel((x + bit, y))
-                        if pixel == 0:
-                            byte |= (1 << (7 - bit))
-                line_bytes.append(byte)
-            nL = width_bytes % 256
-            nH = width_bytes // 256
-            commands += b'\x1B\x2A\x21' + bytes([nL, nH]) + bytes(line_bytes) + b'\n'
+        formatted.append('=' * width)
 
-        return commands
+        current_section = None
+        in_items_section = False
+        found_total = False
+
+        for i, line in enumerate(lines):
+            line_lower = line.lower()
+
+            if len(line) < 2 or line in ['HR', 'ks', 'Kč', 'Kc', '%DPH']:
+                continue
+
+            if any(keyword in line_lower for keyword in header_keywords):
+                number_match = re.search(r'(?:č\.|#|no\.?|number)?\s*(\d{6,})', line, re.IGNORECASE)
+                if number_match:
+                    formatted.append(self._center_text('INVOICE', width))
+                    formatted.append(self._center_text(f"#{number_match.group(1)}", width))
+                    formatted.append('-' * width)
+                else:
+                    formatted.append(self._center_text(line[:width], width))
+                    formatted.append('-' * width)
+                continue
+
+            if any(keyword in line_lower for keyword in vendor_keywords):
+                current_section = 'vendor'
+                formatted.append('')
+                formatted.append('FROM:')
+                formatted.append('-' * width)
+                continue
+
+            if any(keyword in line_lower for keyword in customer_keywords):
+                current_section = 'customer'
+                formatted.append('')
+                formatted.append('TO:')
+                formatted.append('-' * width)
+                continue
+
+            date_match = re.search(r'(\d{1,2}[./-]\d{1,2}[./-]\d{2,4})', line)
+            if date_match:
+                date_str = date_match.group(1)
+                if any(keyword in line_lower for keyword in date_keywords):
+                    formatted.append(f"Date: {date_str}")
+                    continue
+                elif any(keyword in line_lower for keyword in due_keywords):
+                    formatted.append(f"Due: {date_str}")
+                    continue
+                elif current_section not in ['vendor', 'customer']:
+                    formatted.append(f"Date: {date_str}")
+                    continue
+
+            if re.search(r'(VS|variabilní|variable|ref|reference|order).*?(\d{3,})', line, re.IGNORECASE):
+                ref_match = re.search(r'(\d{3,})', line)
+                if ref_match:
+                    formatted.append(f"Ref: {ref_match.group(1)}")
+                continue
+
+            if any(keyword in line_lower for keyword in payment_keywords):
+                payment = re.sub(r'(payment|forma|method|úhrady|uhrady)[:\s]*', '', line, flags=re.IGNORECASE).strip()
+                if payment and len(payment) < 20:
+                    formatted.append(f"Payment: {payment}")
+                continue
+
+            if re.match(r'(IČ|IC|DIČ|DIC|VAT|Tax ID|EIN)[:\s]*', line, re.IGNORECASE):
+                id_match = re.search(r'[\d\s]{6,}', line)
+                if id_match:
+                    label = line.split(':')[0].strip() if ':' in line else 'ID'
+                    formatted.append(f"{label}: {id_match.group().strip()}")
+                continue
+
+            if any(keyword in line_lower for keyword in items_keywords) and not in_items_section:
+                in_items_section = True
+                formatted.append('')
+                formatted.append('=' * width)
+                formatted.append('ITEMS:')
+                formatted.append('-' * width)
+                continue
+
+            if any(keyword in line_lower for keyword in total_keywords) and not found_total:
+                in_items_section = False
+                formatted.append('-' * width)
+
+                amount = self._extract_amount(line)
+                if amount:
+                    formatted.append(self._format_total_line('TOTAL', amount, width))
+                    found_total = True
+                else:
+                    formatted.append('TOTAL:')
+                continue
+
+            if in_items_section:
+                if re.search(r'\d{1,3}[,\s]\d{3}|\d+[.,]\d{2}', line):
+                    item_name, price = self._parse_item_line(line)
+                    if item_name:
+                        formatted.append(self._format_item_line(item_name, price, width))
+                    continue
+
+            if any(keyword in line_lower for keyword in tax_keywords):
+                tax_match = re.search(r'(\d+)%.*?([\d,.\s]+)', line)
+                if tax_match:
+                    rate = tax_match.group(1)
+                    amount = tax_match.group(2).replace(' ', '')
+                    formatted.append(f"VAT {rate}%: {amount}")
+                    continue
+
+            if current_section in ['vendor', 'customer']:
+                if not any(skip in line_lower for skip in ['ičo', 'ico', 'dič', 'dic', 'vat', 'tax']):
+                    if len(line) <= width:
+                        formatted.append(line)
+                    else:
+                        words = line.split()
+                        current_line = ""
+                        for word in words:
+                            if len(current_line) + len(word) + 1 <= width:
+                                current_line += word + " "
+                            else:
+                                if current_line:
+                                    formatted.append(current_line.strip())
+                                current_line = word + " "
+                        if current_line:
+                            formatted.append(current_line.strip())
+                continue
+
+            if re.search(r'\d{10,}', line) and len(line) < width:
+                formatted.append(line)
+                continue
+
+        formatted.append('=' * width)
+        return '\n'.join(formatted)
+
+    def _extract_amount(self, text):
+        """Extract monetary amount from text"""
+        match = re.search(r'(\d{1,3}(?:[,\s]\d{3})*(?:[.,]\d{2})?)', text)
+        if match:
+            return match.group(1).replace(' ', '')
+        return None
+
+    def _parse_item_line(self, line):
+        """
+        Parse item line to extract name and price
+        Returns: (item_name, price)
+        """
+        prices = re.findall(r'\d{1,3}(?:[,\s]\d{3})*(?:[.,]\d{2})', line)
+
+        if not prices:
+            return None, None
+
+        price = prices[-1]
+
+        item_name = re.sub(r'\d+[,.\s]*\d*', '', line).strip()
+        item_name = re.sub(r'\s+', ' ', item_name)  # Clean multiple spaces
+        item_name = re.sub(r'[^\w\s\-áčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]', '', item_name)  # Remove special chars
+
+        if len(item_name) > 3:
+            return item_name, price
+
+        return None, None
+
+    def _center_text(self, text, width):
+        """Center text within given width"""
+        return text.center(width)
+
+    def _format_item_line(self, item_name, price, width):
+        """Format item line with dots"""
+        price = str(price).replace(' ', '')
+
+        max_item_len = width - len(price) - 3
+        if len(item_name) > max_item_len:
+            item_name = item_name[:max_item_len - 2] + '..'
+
+        dots_count = width - len(item_name) - len(price) - 2
+        if dots_count < 1:
+            return f"{item_name}\n  {price}"
+
+        dots = '.' * dots_count
+        return f"{item_name} {dots} {price}"
+
+    def _format_total_line(self, label, amount, width):
+        """Format total line"""
+        amount = str(amount).replace(' ', '')
+        line = f"{label}: {amount}"
+
+        if len(line) <= width:
+            return line
+
+        dots_count = width - len(label) - len(amount) - 2
+        if dots_count < 1:
+            return f"{label}\n{amount}"
+
+        return f"{label} {'.' * dots_count} {amount}"
+
+    def _get_encoding_for_text(self, text):
+        """
+        Determine best encoding for text based on content
+        """
+        # Check for Czech characters
+        if any(char in text for char in 'áčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ'):
+            return 'cp852'
+
+        elif any(char in text for char in 'àâäèéêëîïôöùûü'):
+            return 'cp850'
+
+        return 'cp437'
+
+    def _print_file(self, file_path, task_name):
+        """
+        Print PDF with smart universal formatting
+        """
+        try:
+            if not self._check_printer_availability():
+                raise PrinterException(f"Printer '{self.printer_name}' is not available")
+
+            file_ext = os.path.splitext(file_path)[1].lower()
+            commands = b'\x1B\x40'
+
+            if file_ext != '.pdf':
+                raise PrinterException(f"Unsupported file type: {file_ext}")
+
+            try:
+                reader = PdfReader(file_path)
+                text = ""
+                for page in reader.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text += page_text + "\n"
+            except Exception as e:
+                print(f"Text extraction failed: {e}")
+                raise PrinterException(f"Failed to extract PDF text: {e}")
+
+            if not text.strip():
+                raise PrinterException("PDF contains no extractable text")
+
+            is_invoice = self._detect_invoice_language(text) in ['cs', 'en']
+
+            if is_invoice:
+                formatted_text = self._smart_format_invoice(text)
+            else:
+                formatted_text = text
+
+            encoding = self._get_encoding_for_text(formatted_text)
+            print(f"Using encoding: {encoding}")
+
+            commands += b'\x1B\x61\x00'
+            try:
+                commands += formatted_text.encode(encoding, errors='replace')
+            except Exception:
+                commands += formatted_text.encode('utf-8', errors='replace')
+
+            commands += b'\n\n\n'
+            commands += b'\x1D\x56\x00'
+
+            self._print_raw(commands, task_name)
+            print(f"Document printed: {file_path}")
+
+        except Exception as e:
+            print(f"Error printing file {file_path}: {e}")
+            raise PrinterException(f"Failed to print: {e}")
 
     def _print_raw(self, data, job_name="Print Job"):
         """
@@ -171,68 +405,6 @@ class Printer(threading.Thread):
             print(f"Error printing: {e}")
             raise PrinterException(f"Failed to print: {e}")
 
-    def _print_file(self, file_path, task_name):
-        """
-        Print a file to the thermal printer.
-        Supports PDF (text or image) and images.
-        Converts scanned PDF pages to images automatically.
-        """
-        try:
-            if not self._check_printer_availability():
-                raise PrinterException(f"Printer '{self.printer_name}' is not available")
-
-            file_ext = os.path.splitext(file_path)[1].lower()
-            commands = b'\x1B\x40'
-
-            if file_ext == '.pdf':
-                print(f"Processing PDF: {file_path}")
-                
-                try:
-                    text = self._extract_text_from_pdf(file_path)
-                except Exception as e:
-                    print(f"Text extraction failed: {e}")
-                    text = ""
-
-                if text.strip():
-                    
-                    formatted_text = self._format_text_for_thermal(text)
-
-                    commands += b'\x1B\x61\x01'
-                    commands += b'\x1D\x21\x11'
-                    commands += f"{task_name}\n".encode('cp852', errors='replace')
-                    commands += b'\x1D\x21\x00'
-                    commands += b'\x1B\x61\x00'
-                    commands += b'-' * self.char_per_line + b'\n'
-                    commands += formatted_text.encode('cp852', errors='replace')
-                    commands += b'\n' + b'-' * self.char_per_line + b'\n'
-                else:
-                    
-                    print("PDF contains no text, converting pages to images...")
-                    images = convert_from_path(file_path)
-                    for img in images:
-                        img_commands = self._convert_image_to_thermal(img)
-                        commands += img_commands
-
-            elif file_ext in ['.jpg', '.jpeg', '.png', '.bmp']:
-                print(f"Converting image for thermal printer: {file_path}")
-                commands += b'\x1B\x61\x01'
-                commands += f"{task_name}\n".encode('cp852', errors='replace')
-                commands += b'\x1B\x61\x00'
-                img_commands = self._convert_image_to_thermal(file_path)
-                commands += img_commands
-
-            else:
-                raise PrinterException(f"Unsupported file type: {file_ext}")
-
-            commands += b'\n\n\n'
-            commands += b'\x1D\x56\x00'
-
-            self._print_raw(commands, task_name)
-            print(f"Document printed: {file_path}")
-
-        except Exception as e:
-            print(f"Error printing file {file_path}: {e}")
-            raise PrinterException(f"Failed to print: {e}")
 
     def _delete_file_after_print(self, file_path):
         """
