@@ -38,7 +38,11 @@ class Printer(threading.Thread):
         print(f"Printer thread: current task={self.current_task.name if self.current_task else None}")
 
     def _check_printer_availability(self):
-        """Check if the printer is available in Windows"""
+        """
+        Checks if the printer is available in Windows
+
+        :return: True if the printer is available, False otherwise
+        """
         try:
             printers = [printer[2] for printer in win32print.EnumPrinters(2)]
             if self.printer_name in printers:
@@ -264,6 +268,9 @@ class Printer(threading.Thread):
         self._tasks = value
 
     def stop(self):
+        """
+        Stops the printer
+        """
         with self.lock:
             self.running = False
 
@@ -275,6 +282,11 @@ class Printer(threading.Thread):
         asyncio.run_coroutine_threadsafe(self.manager.broadcast(msg), self.loop)
 
     def get_status(self):
+        """
+        Returns the status of the printer
+
+        :return: status of the printer
+        """
         with self.lock:
             return {
                 'running': self.running,
