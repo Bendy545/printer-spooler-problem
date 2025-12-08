@@ -17,7 +17,6 @@ from src.devices.printer import Printer
 from src.models.task import Task
 from src.users.user import User
 
-# Directory to store uploaded files
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -94,7 +93,7 @@ async def lifespan(app: FastAPI):
     printer.start()
     app.state.printer = printer
 
-    yield  # server běží
+    yield
 
     print("Server stopping...")
     app.state.printer.stop()
@@ -206,22 +205,19 @@ async def create_task(username: str = Form(...), priority: int = Form(...), file
     """
 
     try:
-        # Save the uploaded file
+        
         file_path = os.path.join(UPLOAD_DIR, file.filename)
 
-        # Handle duplicate filenames
         base_name, extension = os.path.splitext(file.filename)
         counter = 1
         while os.path.exists(file_path):
             file_path = os.path.join(UPLOAD_DIR, f"{base_name}_{counter}{extension}")
             counter += 1
 
-        # Write file to disk
         with open(file_path, "wb") as f:
             content = await file.read()
             f.write(content)
 
-        # Reset file pointer for page counting
         file.file.seek(0)
         pages = get_page_count(file.file, file.filename)
         print(f"Pages counted: {pages}")
@@ -233,7 +229,7 @@ async def create_task(username: str = Form(...), priority: int = Form(...), file
             pages=pages,
             priority=priority,
             user=user_obj,
-            file_path=file_path  # Add file path to task
+            file_path=file_path
         )
 
         task_list.append(new_task)
