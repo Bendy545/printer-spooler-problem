@@ -10,7 +10,6 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, F
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
-import docx
 
 from src.spooler.task_list import TaskList
 from src.devices.printer import Printer
@@ -172,19 +171,6 @@ def get_page_count(file_stream, filename: str) -> int:
         if filename.endswith('.pdf'):
             reader = PdfReader(file_stream)
             return len(reader.pages)
-
-        elif filename.endswith('.docx'):
-            document = docx.Document(file_stream)
-            props = document.core_properties
-            if props.pages and props.pages > 0:
-                return props.pages
-            else:
-                print("Warning: DOCX page count metadata missing, defaulting to 1.")
-                return 1
-
-        elif filename.endswith(('.jpg', '.jpeg', '.png')):
-            return 1
-
         else:
             return 1
 
