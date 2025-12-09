@@ -5,14 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Added new methods to printer.py for better invoice formatting. Then allowed only .pdf files to be processed thru the app.">
+      <change afterPath="$PROJECT_DIR$/src/user/sessions.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/user/users.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/app_login.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/login.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/printer-producent-consumer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/printer-producent-consumer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/devices/printer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/devices/printer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/users/user.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/task_list_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/task_list_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/task_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/task_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/user_tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,10 +27,10 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Unit Test" />
+        <option value="Python Script" />
         <option value="HTML File" />
         <option value="CSS File" />
         <option value="JavaScript File" />
-        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -51,12 +55,12 @@
       </list>
     </option>
   </component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Bendy545/printer-spooler-problem.git&quot;,
-    &quot;accountId&quot;: &quot;0827c98b-406e-451d-bd05-e8ad5766938d&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Bendy545/printer-spooler-problem.git",
+    "accountId": "ed489182-41fb-48cb-aac0-097721ae1937"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -65,50 +69,51 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests for test.server_api_tests.TestMainApp.test_get_root.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for test.server_api_tests.TestMainApp.test_websocket_broadcast_on_new_task.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for test.task_list_tests.TestTaskList.test_append_priority_insertion.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.printer_tests.MyTestCase.test_name_error.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.printer_tests.MyTestCase.test_name_setter.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.printer_tests.MyTestCase.test_stop.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.printer_tests.MyTestCase.test_tasks.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.task_list_tests.TestTaskList.test_append.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.task_list_tests.TestTaskList.test_pop.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.task_list_tests.TestTaskList.test_settery.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.task_list_tests.TestTaskList.test_settery_error.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.task_list_tests.TestTaskList.test_str.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.task_tests.TaskTests.test_init.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.task_tests.TaskTests.test_str.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for tests.user_tests.UserTest.test_setters_error.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in printer_tests.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in server_api_tests.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in task_list_tests.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in task_tests.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in user_tests.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.printer.executor&quot;: &quot;Run&quot;,
-    &quot;Python.task_list.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_print.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_print2.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/PV/printer-spooler-problem/test/sampleFiles&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.index.html.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests for test.server_api_tests.TestMainApp.test_get_root.executor": "Run",
+    "Python tests.Python tests for test.server_api_tests.TestMainApp.test_websocket_broadcast_on_new_task.executor": "Run",
+    "Python tests.Python tests for test.task_list_tests.TestTaskList.test_append_priority_insertion.executor": "Run",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_name_error.executor": "Run",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_name_setter.executor": "Run",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_stop.executor": "Run",
+    "Python tests.Python tests for tests.printer_tests.MyTestCase.test_tasks.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_append.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_pop.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_settery.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_settery_error.executor": "Run",
+    "Python tests.Python tests for tests.task_list_tests.TestTaskList.test_str.executor": "Run",
+    "Python tests.Python tests for tests.task_tests.TaskTests.test_init.executor": "Run",
+    "Python tests.Python tests for tests.task_tests.TaskTests.test_str.executor": "Run",
+    "Python tests.Python tests for tests.user_tests.UserTest.test_setters_error.executor": "Run",
+    "Python tests.Python tests in printer_tests.py.executor": "Run",
+    "Python tests.Python tests in server_api_tests.py.executor": "Run",
+    "Python tests.Python tests in task_list_tests.py.executor": "Run",
+    "Python tests.Python tests in task_tests.py.executor": "Run",
+    "Python tests.Python tests in user_tests.py.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.printer.executor": "Run",
+    "Python.task_list.executor": "Run",
+    "Python.test_print.executor": "Run",
+    "Python.test_print2.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "dev",
+    "last_opened_file_path": "/Users/martinchmelik/Desktop/Skola/PV/printer-spooler-problem",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\PV\printer-spooler-problem\test\sampleFiles" />
@@ -137,6 +142,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -159,6 +165,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_print.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -181,6 +188,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_print2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -200,6 +208,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/test/task_list_tests.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
@@ -215,6 +224,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/test/task_tests.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
@@ -223,16 +233,13 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python tests.Python tests in task_tests.py" />
-        <item itemvalue="Python tests.Python tests in task_list_tests.py" />
-        <item itemvalue="Python.test_print2" />
-        <item itemvalue="Python.test_print" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-PY-252.25557.178" />
         <option value="bundled-python-sdk-ce6832f46686-7b97d883f26b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.25557.178" />
       </set>
     </attachedChunks>
@@ -259,6 +266,7 @@
       <workItem from="1764184218464" duration="3283000" />
       <workItem from="1764256734116" duration="10144000" />
       <workItem from="1764339461192" duration="3608000" />
+      <workItem from="1765310860129" duration="1988000" />
     </task>
     <task id="LOCAL-00001" summary="Project creation">
       <option name="closed" value="true" />

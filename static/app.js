@@ -6,7 +6,38 @@ const queueCount = document.getElementById('queue-count');
 const queueList = document.getElementById('queue-list');
 const taskForm = document.getElementById('task-form');
 const formResponse = document.getElementById('form-response');
+const logoutButton = document.getElementById('logout-button')
 const allowedExtensions = [".pdf"];
+
+fetch('/api/check-auth')
+    .then(res => res.json())
+    .then(data => {
+        if (!data.authenticated) {
+            window.location.href = '/login';
+        } else {
+            // Update UI with username if available
+            const usernameDisplay = document.getElementById('current-user');
+            if (usernameDisplay) {
+                usernameDisplay.textContent = data.username;
+            }
+        }
+    })
+    .catch(err => {
+        console.error('Auth check failed:', err);
+        window.location.href = '/login';
+    });
+
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login';
+        } catch (error) {
+            console.error('Logout failed:', error);
+            window.location.href = '/login';
+        }
+    });
+}
 
 ws.onopen = () => {
     updateStatus('online', 'Connected');
@@ -70,6 +101,11 @@ taskForm.addEventListener('submit', async (event) => {
 
         const result = await response.json();
 
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+
         if (response.ok) {
             showFormResponse('Task added to queue!', 'success');
             taskForm.reset();
@@ -101,12 +137,20 @@ function isAllowed(filename) {
 async function fetchSystemState() {
     try {
         const response = await fetch('/system-state/');
+
+        if (response.status === 401) {
+            // Session expired, redirect to login
+            window.location.href = '/login';
+            return;
+        }
+
         const state = await response.json();
         updateSystemState(state);
     } catch (error) {
         console.error('Error fetching system state:', error);
     }
 }
+
 
 /**
  * Updates the queue and printer status UI based on server state.

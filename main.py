@@ -2,12 +2,15 @@ import asyncio
 import os
 import sys
 import threading
+import json
+import secrets
 from contextlib import asynccontextmanager
-from typing import List, Dict, Any
+from datetime import timedelta, datetime
+from typing import List, Dict, Any, Optional
 
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Form
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Form, Request, Depends, HTTPException, status
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
 
@@ -18,7 +21,79 @@ from src.models.task import Task
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+USERS_FILE = "src/user/users.json"
+SESSIONS_FILE = "src/user/sessions.json"
+SESSION_DURATION = timedelta(hours=24)
 
+
+def load_users() -> Dict[str, str]:
+    if not os.path.exists(USERS_FILE):
+        default_users = {
+            "admin": "admin123"
+        }
+        with open(USERS_FILE, 'w') as f:
+            json.dump(default_users, f, indent=2)
+        print(f"Created {USERS_FILE} with default admin user")
+        return default_users
+
+    with open(USERS_FILE, 'r') as f:
+        return json.load(f)
+
+def load_sessions() -> Dict[str, Dict[str, Any]]:
+    if not os.path.exists(SESSIONS_FILE):
+        return {}
+    try:
+        with open(SESSIONS_FILE, 'r') as f:
+            return json.load(f)
+    except:
+        return {}
+
+def save_sessions(sessions: Dict[str, Dict[str, Any]]):
+    with open(SESSIONS_FILE, 'w') as f:
+        json.dump(sessions, f, indent=2)
+
+
+def create_session(username: str) -> str:
+    token = secrets.token_urlsafe(32)
+    sessions = load_sessions()
+    sessions[token] = {
+        "username": username,
+        "created": datetime.now().isoformat(),
+        "expires": (datetime.now() + SESSION_DURATION).isoformat()
+    }
+    save_sessions(sessions)
+    return token
+
+
+def get_current_user(request: Request) -> Optional[str]:
+    token = request.cookies.get("session_token")
+    if not token:
+        return None
+
+    sessions = load_sessions()
+    session = sessions.get(token)
+
+    if not session:
+        return None
+
+    expires = datetime.fromisoformat(session["expires"])
+    if datetime.now() > expires:
+        del sessions[token]
+        save_sessions(sessions)
+        return None
+
+    return session["username"]
+
+
+async def require_auth(request: Request):
+    """Dependency to require authentication."""
+    user = get_current_user(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated"
+        )
+    return user
 class ConnectionManager:
     def __init__(self):
         """
@@ -116,6 +191,7 @@ task_list = TaskList()
 app = FastAPI(title="Print Spooler API", lifespan=lifespan)
 STATIC_DIR = resource_path("static")
 INDEX_FILE = os.path.join(STATIC_DIR, "index.html")
+LOGIN_FILE = os.path.join(STATIC_DIR, "login.html")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
@@ -177,20 +253,57 @@ def get_page_count(file_stream, filename: str) -> int:
         print(f"Error reading file {filename}: {e}. Defaulting to 1 page.")
         return 1
 
+@app.post("/api/login")
+async def login(request: Request, username: str = Form(...), password: str = Form(...)):
+    users = load_users()
+
+    if username not in users or users[username] != password:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password"
+        )
+
+    token = create_session(username)
+
+    response = JSONResponse(content={"message": "Login successful"})
+    response.set_cookie(
+        key="session_token",
+        value=token,
+        httponly=True,
+        max_age=int(SESSION_DURATION.total_seconds()),
+        samesite="lax"
+    )
+
+    return response
+
+
+@app.post("/api/logout")
+async def logout(request: Request):
+    token = request.cookies.get("session_token")
+    if token:
+        sessions = load_sessions()
+        if token in sessions:
+            del sessions[token]
+            save_sessions(sessions)
+
+    response = JSONResponse(content={"message": "Logged out"})
+    response.delete_cookie("session_token")
+    return response
+
+@app.get("/api/check-auth")
+async def check_auth(request: Request):
+    user = get_current_user(request)
+    if user:
+        return {"authenticated": True, "username": user}
+    return {"authenticated": False}
+
 
 @app.post("/tasks/")
-async def create_task(username: str = Form(...), priority: int = Form(...), file: UploadFile = File(...)):
+async def create_task(request: Request,username: str = Form(...),priority: int = Form(...),file: UploadFile = File(...),current_user: str = Depends(require_auth)):
     """
     Creates a new print task and adds it to the queue.
-
-    :param username: Name of the user submitting the task
-    :param priority: Task priority
-    :param file: Uploaded file
-    :return: JSON message with task status
     """
-
     try:
-        
         file_path = os.path.join(UPLOAD_DIR, file.filename)
 
         base_name, extension = os.path.splitext(file.filename)
@@ -227,8 +340,9 @@ async def create_task(username: str = Form(...), priority: int = Form(...), file
         return {"error": f"Error adding task: {e}"}
 
 
+
 @app.get("/system-state/")
-async def system_state_endpoint():
+async def system_state_endpoint(request: Request, current_user: str = Depends(require_auth)):
     """
     Returns the current system state as JSON.
 
@@ -236,14 +350,23 @@ async def system_state_endpoint():
     """
     return await get_system_state()
 
+@app.get("/login")
+async def get_login():
+    """
+    Serves the login page.
+    """
+    return FileResponse(LOGIN_FILE)
 
 @app.get("/")
-async def get_root():
+async def get_root(request: Request):
     """
     Serves the main frontend HTML page.
 
     :return: FileResponse with index.html
     """
+    user = get_current_user(request)
+    if not user:
+        return RedirectResponse(url="/login")
     return FileResponse(INDEX_FILE)
 
 
@@ -255,6 +378,25 @@ async def websocket_endpoint(websocket: WebSocket):
     :param websocket: WebSocket connection to client
     :return:
     """
+    cookies = websocket.cookies
+    token = cookies.get("session_token")
+
+    if not token:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    sessions = load_sessions()
+    session = sessions.get(token)
+
+    if not session:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    expires = datetime.fromisoformat(session["expires"])
+    if datetime.now() > expires:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
     await manager.connect(websocket)
     try:
         while True:
@@ -262,7 +404,6 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         print(f"Client {websocket.client} disconnected.")
-
 
 if __name__ == "__main__":
     import socket
