@@ -3,10 +3,7 @@ import time
 import asyncio
 import win32print
 import os
-from PIL import Image
 from pypdf import PdfReader
-from pdf2image import convert_from_path
-import io
 
 import re
 
@@ -504,11 +501,11 @@ class Printer(threading.Thread):
                     self.current_task = task
                     self.is_printing = True
 
-                msg_start = f"START: Printing {task.name} ({task.pages} pages) for {task.user.username}"
+                msg_start = f"START: Printing {task.name} ({task.pages} pages) for {task.username}"
                 asyncio.run_coroutine_threadsafe(self.manager.broadcast(msg_start), self.loop)
                 asyncio.run_coroutine_threadsafe(self._broadcast_system_state(), self.loop)
 
-                print_msg = f"PRINTING: {task.name}, pages={task.pages}, priority={task.priority} for user={task.user.username}"
+                print_msg = f"PRINTING: {task.name}, pages={task.pages}, priority={task.priority} for user={task.username}"
                 print(print_msg)
 
                 print_success = False

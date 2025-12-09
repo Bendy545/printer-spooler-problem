@@ -14,7 +14,6 @@ from pypdf import PdfReader
 from src.spooler.task_list import TaskList
 from src.devices.printer import Printer
 from src.models.task import Task
-from src.users.user import User
 
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -136,7 +135,7 @@ async def get_system_state():
             "name": task.name,
             "pages": task.pages,
             "priority": task.priority,
-            "user": task.user.username
+            "user": task.username
         }
     return {
         "printer_status": "printing" if printer_status['is_printing'] else "idle",
@@ -148,7 +147,7 @@ async def get_system_state():
                 "name": task.name,
                 "pages": task.pages,
                 "priority": task.priority,
-                "user": task.user.username
+                "user": task.username
             } for task in queue_tasks
         ]
     }
@@ -208,19 +207,17 @@ async def create_task(username: str = Form(...), priority: int = Form(...), file
         pages = get_page_count(file.file, file.filename)
         print(f"Pages counted: {pages}")
 
-        user_obj = User(username=username, task_list=task_list, number_of_tasks=0)
-
         new_task = Task(
             name=file.filename,
             pages=pages,
             priority=priority,
-            user=user_obj,
+            username=username,
             file_path=file_path
         )
 
         task_list.append(new_task)
 
-        await manager.broadcast(f"NEW: New task added {new_task.name} by {user_obj.username}")
+        await manager.broadcast(f"NEW: New task added {new_task.name} by {new_task.username}")
         state = await get_system_state()
         await manager.broadcast_json({"type": "system_state", "data": state})
 

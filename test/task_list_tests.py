@@ -1,7 +1,7 @@
 import unittest
 from src.spooler.task_list import TaskList, TaskListException
 from src.models.task import Task
-from src.users.user import User
+
 
 class TestTaskList(unittest.TestCase):
     def test_init(self):
@@ -33,8 +33,7 @@ class TestTaskList(unittest.TestCase):
         Test the append() method
         """
         task_list = TaskList()
-        user = User("user1",task_list, 1)
-        task = Task("doc1", 10, 1, user)
+        task = Task("doc1", 10, 1, "user")
         task_list.append(task)
         self.assertEqual(task_list.size, 1)
 
@@ -43,8 +42,7 @@ class TestTaskList(unittest.TestCase):
         Test the pop() method
         """
         task_list = TaskList()
-        user = User("user1",task_list, 1)
-        task = Task("doc1", 10, 1, user)
+        task = Task("doc1", 10, 1, "user")
         task_list.append(task)
         self.assertEqual(task_list.size, 1)
         task_list.pop()
@@ -69,11 +67,10 @@ class TestTaskList(unittest.TestCase):
         Test that tasks are added in correct order based on priority (lower number = higher priority).
         """
         task_list = TaskList()
-        user = User("test_user", task_list, 1)
 
-        task_low = Task("low_doc", 1, 10, user)
-        task_high = Task("high_doc", 10, 2, user)
-        task_mid = Task("mid_doc", 5, 3, user)
+        task_low = Task("low_doc", 1, 10, "user")
+        task_high = Task("high_doc", 10, 2, "user")
+        task_mid = Task("mid_doc", 5, 3, "user")
 
         task_list.append(task_low)
         task_list.append(task_high)
@@ -86,7 +83,7 @@ class TestTaskList(unittest.TestCase):
         self.assertEqual(ordered_tasks[2].name, "low_doc")
         self.assertEqual(task_list.size, 3)
 
-        task_high_2 = Task("high_doc_2", 10, 1, user)
+        task_high_2 = Task("high_doc_2", 10, 1, "user")
         task_list.append(task_high_2)
 
         ordered_tasks = task_list.get_all_tasks()

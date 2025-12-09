@@ -2,20 +2,20 @@ class TaskException(Exception):
     pass
 
 class Task:
-    def __init__(self, name, pages, priority, user, file_path=None):
+    def __init__(self, name, pages, priority, username, file_path=None):
         """
         Represents a print job submitted by the user
 
         :param name: Name of the task/document
         :param pages: Number of pages to print
         :param priority: Priority of the task (lower number = higher priority)
-        :param user: User who submitted the task
+        :param username: User who submitted the task
         :raises TaskException: If parameters are not of the expected type
         """
         self.name = name
         self.pages = pages
         self.priority = priority
-        self.user = user
+        self.username = username
         self.file_path = file_path
 
     @property
@@ -81,26 +81,25 @@ class Task:
         self._priority = value
 
     @property
-    def user(self):
+    def username(self):
         """
         Get the user who submitted the task
 
         :return: the user who submitted the task
         """
-        return self._user
+        return self._username
 
-    @user.setter
-    def user(self, value):
+    @username.setter
+    def username(self, value):
         """
         Set the user who submitted the task
 
         :param value: the user who submitted the task
-        :raises TaskException: If value is not a User instance
+        :raises TaskException: If value is not a string
         """
-        from src.users.user import User
-        if not isinstance(value, User):
-            raise TaskException('user must be a User')
-        self._user = value
+        if not isinstance(value, str):
+            raise TaskException('user must be a string')
+        self._username = value
 
     def __str__(self):
         """
@@ -108,4 +107,4 @@ class Task:
 
         :return: String describing the task
         """
-        return f"Task {self.name}, pages={self.pages}, priority={self.priority} by user={self.user.username}"
+        return f"Task {self.name}, pages={self.pages}, priority={self.priority} by username={self.username}"
