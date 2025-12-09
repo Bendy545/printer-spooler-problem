@@ -111,3 +111,8 @@ body {
 .error-message.show {
     display: block;
 }
+
+.printer-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}

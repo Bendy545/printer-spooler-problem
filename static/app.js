@@ -6,8 +6,11 @@ const queueCount = document.getElementById('queue-count');
 const queueList = document.getElementById('queue-list');
 const taskForm = document.getElementById('task-form');
 const formResponse = document.getElementById('form-response');
-const logoutButton = document.getElementById('logout-button')
+const logoutButton = document.getElementById('logout-button');
+const usernameInput = document.getElementById('username');
 const allowedExtensions = [".pdf"];
+
+let currentUsername = null;
 
 fetch('/api/check-auth')
     .then(res => res.json())
@@ -15,10 +18,16 @@ fetch('/api/check-auth')
         if (!data.authenticated) {
             window.location.href = '/login';
         } else {
-            // Update UI with username if available
+            currentUsername = data.username;
             const usernameDisplay = document.getElementById('current-user');
             if (usernameDisplay) {
                 usernameDisplay.textContent = data.username;
+            }
+            if (usernameInput) {
+                usernameInput.value = data.username;
+                usernameInput.readOnly = true;
+                usernameInput.style.backgroundColor = '#f5f5f5';
+                usernameInput.style.cursor = 'not-allowed';
             }
         }
     })
@@ -70,7 +79,7 @@ taskForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append("username", document.getElementById('username').value);
+    formData.append("username", currentUsername || usernameInput.value);
     formData.append("priority", parseInt(document.getElementById('priority').value));
 
     const fileInput = document.getElementById('file');
@@ -109,6 +118,9 @@ taskForm.addEventListener('submit', async (event) => {
         if (response.ok) {
             showFormResponse('Task added to queue!', 'success');
             taskForm.reset();
+            if (currentUsername) {
+                usernameInput.value = currentUsername;
+            }
         } else {
             showFormResponse('Error: ' + (result.error || 'Unknown error'), 'error');
         }
@@ -139,7 +151,6 @@ async function fetchSystemState() {
         const response = await fetch('/system-state/');
 
         if (response.status === 401) {
-            // Session expired, redirect to login
             window.location.href = '/login';
             return;
         }
@@ -150,7 +161,6 @@ async function fetchSystemState() {
         console.error('Error fetching system state:', error);
     }
 }
-
 
 /**
  * Updates the queue and printer status UI based on server state.
