@@ -6,7 +6,47 @@ const queueCount = document.getElementById('queue-count');
 const queueList = document.getElementById('queue-list');
 const taskForm = document.getElementById('task-form');
 const formResponse = document.getElementById('form-response');
+const logoutButton = document.getElementById('logout-button');
+const usernameInput = document.getElementById('username');
 const allowedExtensions = [".pdf"];
+
+let currentUsername = null;
+
+fetch('/api/check-auth')
+    .then(res => res.json())
+    .then(data => {
+        if (!data.authenticated) {
+            window.location.href = '/login';
+        } else {
+            currentUsername = data.username;
+            const usernameDisplay = document.getElementById('current-user');
+            if (usernameDisplay) {
+                usernameDisplay.textContent = data.username;
+            }
+            if (usernameInput) {
+                usernameInput.value = data.username;
+                usernameInput.readOnly = true;
+                usernameInput.style.backgroundColor = '#f5f5f5';
+                usernameInput.style.cursor = 'not-allowed';
+            }
+        }
+    })
+    .catch(err => {
+        console.error('Auth check failed:', err);
+        window.location.href = '/login';
+    });
+
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login';
+        } catch (error) {
+            console.error('Logout failed:', error);
+            window.location.href = '/login';
+        }
+    });
+}
 
 ws.onopen = () => {
     updateStatus('online', 'Connected');
@@ -39,7 +79,7 @@ taskForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append("username", document.getElementById('username').value);
+    formData.append("username", currentUsername || usernameInput.value);
     formData.append("priority", parseInt(document.getElementById('priority').value));
 
     const fileInput = document.getElementById('file');
@@ -70,9 +110,17 @@ taskForm.addEventListener('submit', async (event) => {
 
         const result = await response.json();
 
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+
         if (response.ok) {
             showFormResponse('Task added to queue!', 'success');
             taskForm.reset();
+            if (currentUsername) {
+                usernameInput.value = currentUsername;
+            }
         } else {
             showFormResponse('Error: ' + (result.error || 'Unknown error'), 'error');
         }
@@ -101,6 +149,12 @@ function isAllowed(filename) {
 async function fetchSystemState() {
     try {
         const response = await fetch('/system-state/');
+
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+
         const state = await response.json();
         updateSystemState(state);
     } catch (error) {
