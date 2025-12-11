@@ -2,98 +2,21 @@ import asyncio
 import os
 import sys
 import threading
-import json
-import secrets
 from contextlib import asynccontextmanager
-from datetime import timedelta, datetime
-from typing import List, Dict, Any, Optional
+from datetime import datetime
+from typing import List, Dict, Any
 
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Form, Request, Depends, HTTPException, status
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, status
 from fastapi.staticfiles import StaticFiles
-from pypdf import PdfReader
-
 from src.spooler.task_list import TaskList
 from src.devices.printer import Printer
-from src.models.task import Task
+from src.routes import auth, system, tasks, pages
+from src.auth.session_manager import load_sessions
 
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-USERS_FILE = "src/user/users.json"
-SESSIONS_FILE = "src/user/sessions.json"
-SESSION_DURATION = timedelta(hours=24)
-
-
-def load_users() -> Dict[str, str]:
-    if not os.path.exists(USERS_FILE):
-        default_users = {
-            "admin": "admin123"
-        }
-        with open(USERS_FILE, 'w') as f:
-            json.dump(default_users, f, indent=2)
-        print(f"Created {USERS_FILE} with default admin user")
-        return default_users
-
-    with open(USERS_FILE, 'r') as f:
-        return json.load(f)
-
-def load_sessions() -> Dict[str, Dict[str, Any]]:
-    if not os.path.exists(SESSIONS_FILE):
-        return {}
-    try:
-        with open(SESSIONS_FILE, 'r') as f:
-            return json.load(f)
-    except:
-        return {}
-
-def save_sessions(sessions: Dict[str, Dict[str, Any]]):
-    with open(SESSIONS_FILE, 'w') as f:
-        json.dump(sessions, f, indent=2)
-
-
-def create_session(username: str) -> str:
-    token = secrets.token_urlsafe(32)
-    sessions = load_sessions()
-    sessions[token] = {
-        "username": username,
-        "created": datetime.now().isoformat(),
-        "expires": (datetime.now() + SESSION_DURATION).isoformat()
-    }
-    save_sessions(sessions)
-    return token
-
-
-def get_current_user(request: Request) -> Optional[str]:
-    token = request.cookies.get("session_token")
-    if not token:
-        return None
-
-    sessions = load_sessions()
-    session = sessions.get(token)
-
-    if not session:
-        return None
-
-    expires = datetime.fromisoformat(session["expires"])
-    if datetime.now() > expires:
-        del sessions[token]
-        save_sessions(sessions)
-        return None
-
-    return session["username"]
-
-
-async def require_auth(request: Request):
-    """Dependency to require authentication."""
-    user = get_current_user(request)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated"
-        )
-    return user
 class ConnectionManager:
     def __init__(self):
         """
@@ -184,8 +107,6 @@ def resource_path(relative_path):
 
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
 
-UPLOAD_DIR = "uploaded_files"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
 manager = ConnectionManager()
 task_list = TaskList()
 app = FastAPI(title="Print Spooler API", lifespan=lifespan)
@@ -228,147 +149,14 @@ async def get_system_state():
         ]
     }
 
+tasks.initialize_task_router(task_list, manager, get_system_state, UPLOAD_DIR)
+system.initialize_system_router(get_system_state)
+pages.initialize_page_router(INDEX_FILE, LOGIN_FILE)
 
-def get_page_count(file_stream, filename: str) -> int:
-    """
-    Returns the number of pages in a file based on its type.
-
-    Supports PDF, DOCX and common image formats (JPG, PNG).
-    Defaults to 1 if page count cannot be determined.
-
-    :param file_stream: file-like object
-    :param filename: Name of the file
-    :return: Number of pages in the file
-    """
-    filename = filename.lower()
-
-    try:
-        if filename.endswith('.pdf'):
-            reader = PdfReader(file_stream)
-            return len(reader.pages)
-        else:
-            return 1
-
-    except Exception as e:
-        print(f"Error reading file {filename}: {e}. Defaulting to 1 page.")
-        return 1
-
-@app.post("/api/login")
-async def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    users = load_users()
-
-    if username not in users or users[username] != password:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password"
-        )
-
-    token = create_session(username)
-
-    response = JSONResponse(content={"message": "Login successful"})
-    response.set_cookie(
-        key="session_token",
-        value=token,
-        httponly=True,
-        max_age=int(SESSION_DURATION.total_seconds()),
-        samesite="lax"
-    )
-
-    return response
-
-
-@app.post("/api/logout")
-async def logout(request: Request):
-    token = request.cookies.get("session_token")
-    if token:
-        sessions = load_sessions()
-        if token in sessions:
-            del sessions[token]
-            save_sessions(sessions)
-
-    response = JSONResponse(content={"message": "Logged out"})
-    response.delete_cookie("session_token")
-    return response
-
-@app.get("/api/check-auth")
-async def check_auth(request: Request):
-    user = get_current_user(request)
-    if user:
-        return {"authenticated": True, "username": user}
-    return {"authenticated": False}
-
-
-@app.post("/tasks/")
-async def create_task(request: Request,username: str = Form(...),priority: int = Form(...),file: UploadFile = File(...),current_user: str = Depends(require_auth)):
-    """
-    Creates a new print task and adds it to the queue.
-    """
-    try:
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
-
-        base_name, extension = os.path.splitext(file.filename)
-        counter = 1
-        while os.path.exists(file_path):
-            file_path = os.path.join(UPLOAD_DIR, f"{base_name}_{counter}{extension}")
-            counter += 1
-
-        with open(file_path, "wb") as f:
-            content = await file.read()
-            f.write(content)
-
-        file.file.seek(0)
-        pages = get_page_count(file.file, file.filename)
-        print(f"Pages counted: {pages}")
-
-        new_task = Task(
-            name=file.filename,
-            pages=pages,
-            priority=priority,
-            username=username,
-            file_path=file_path
-        )
-
-        task_list.append(new_task)
-
-        await manager.broadcast(f"NEW: New task added {new_task.name} by {new_task.username}")
-        state = await get_system_state()
-        await manager.broadcast_json({"type": "system_state", "data": state})
-
-        return {"message": "Task successfully added.", "task_id": new_task.name}
-
-    except Exception as e:
-        return {"error": f"Error adding task: {e}"}
-
-
-
-@app.get("/system-state/")
-async def system_state_endpoint(request: Request, current_user: str = Depends(require_auth)):
-    """
-    Returns the current system state as JSON.
-
-    :return: Dictionary with printer status and task queue
-    """
-    return await get_system_state()
-
-@app.get("/login")
-async def get_login():
-    """
-    Serves the login page.
-    """
-    return FileResponse(LOGIN_FILE)
-
-@app.get("/")
-async def get_root(request: Request):
-    """
-    Serves the main frontend HTML page.
-
-    :return: FileResponse with index.html
-    """
-    user = get_current_user(request)
-    if not user:
-        return RedirectResponse(url="/login")
-    return FileResponse(INDEX_FILE)
-
+app.include_router(auth.router)
+app.include_router(system.router)
+app.include_router(pages.router)
+app.include_router(tasks.router)
 
 @app.websocket("/ws/status")
 async def websocket_endpoint(websocket: WebSocket):
