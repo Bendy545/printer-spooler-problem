@@ -4,15 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Fixed login screen and authentication">
-      <change afterPath="$PROJECT_DIR$/src/auth/session_manager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/routes/auth.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/routes/pages.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/routes/system.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/routes/tasks.py" afterDir="false" />
+    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="from the main.py made files for each and one of the routes or more to make it more clear and usable">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/user/sessions.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/sessions.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/session_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/session_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/user/users.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -423,7 +420,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765314626232</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="from the main.py made files for each and one of the routes or more to make it more clear and usable">
+      <option name="closed" value="true" />
+      <created>1765476393338</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1765476393338</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -460,7 +465,8 @@
     <MESSAGE value="Added a sample bill for printing. Added some comments to the printer.py file" />
     <MESSAGE value="Added new methods to printer.py for better invoice formatting. Then allowed only .pdf files to be processed thru the app." />
     <MESSAGE value="Fixed login screen and authentication" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed login screen and authentication" />
+    <MESSAGE value="from the main.py made files for each and one of the routes or more to make it more clear and usable" />
+    <option name="LAST_COMMIT_MESSAGE" value="from the main.py made files for each and one of the routes or more to make it more clear and usable" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763758559953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

@@ -9,11 +9,17 @@ router = APIRouter(prefix="/api", tags=["authentication"])
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
     users = load_users()
 
-    if username not in users or users[username] != password:
+    if username not in users:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password"
         )
+
+    hashed_password = users[username]
+
+    from src.auth.session_manager import verify_password
+    if not verify_password(password, hashed_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
     token = create_session(username)
 
