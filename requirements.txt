@@ -5,3 +5,4 @@ pypdf==6.4.0
 python-docx==1.2.0
 httpx
 pypiwin32
+bcrypt
