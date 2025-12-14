@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import secrets
 import bcrypt
@@ -10,9 +11,24 @@ class SessionManagerException(Exception):
     pass
 
 
-USERS_FILE = "src/user/users.json"
-SESSIONS_FILE = "src/user/sessions.json"
+def get_writable_path():
+    """
+    Get writable path for user data files.
+    In .exe: same directory as the executable
+    In dev: project root directory
+    """
+    if getattr(sys, 'frozen', False):
+        base_path = os.path.dirname(sys.executable)
+    else:
+        base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    return base_path
+
+BASE_DIR = get_writable_path()
+USERS_FILE = os.path.join(BASE_DIR, "users.json")
+SESSIONS_FILE = os.path.join(BASE_DIR, "sessions.json")
 SESSION_DURATION = timedelta(hours=24)
+
 
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()

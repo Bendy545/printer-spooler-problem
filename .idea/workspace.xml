@@ -4,8 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="added hashed passwords for secure">
+    <list default="true" id="f1959021-91e5-47e7-8ddc-e16f346221d6" name="Changes" comment="Added hashed users">
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/auth/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/routes/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/spoolerv3.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/spoolerv3.spec" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/session_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/session_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/user/sessions.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/sessions.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -111,11 +117,11 @@
       <recent name="E:\PV\printer-spooler-problem\uploaded_files" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\PV\printer-spooler-problem2\bin" />
       <recent name="E:\PV\printer-spooler-problem2\src\auth" />
       <recent name="E:\PV\printer-spooler-problem\bin" />
       <recent name="E:\PV\printer-spooler-problem" />
       <recent name="$PROJECT_DIR$/bin" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -433,7 +439,23 @@
       <option name="project" value="LOCAL" />
       <updated>1765477578021</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="new version of the application">
+      <option name="closed" value="true" />
+      <created>1765725283896</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1765725283896</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Added hashed users">
+      <option name="closed" value="true" />
+      <created>1765726143519</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1765726143519</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -472,7 +494,9 @@
     <MESSAGE value="Fixed login screen and authentication" />
     <MESSAGE value="from the main.py made files for each and one of the routes or more to make it more clear and usable" />
     <MESSAGE value="added hashed passwords for secure" />
-    <option name="LAST_COMMIT_MESSAGE" value="added hashed passwords for secure" />
+    <MESSAGE value="new version of the application" />
+    <MESSAGE value="Added hashed users" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added hashed users" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/printer_producent_consumer$main.coverage" NAME="main Coverage Results" MODIFIED="1763758559953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
